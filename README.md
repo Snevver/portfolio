@@ -7,7 +7,6 @@
 - [User Stories](#-user-stories)
 - [UML Diagrams](#-uml-diagrams)
 - [Production Build](#-production-build)
-- [Troubleshooting](#-troubleshooting)
 
 ---
 
