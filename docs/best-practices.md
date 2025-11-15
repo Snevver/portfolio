@@ -12,7 +12,7 @@ This document outlines the best practices and naming conventions to be followed 
 
 When naming variables, please avoid using acronyms or abbreviations unless they are widely recognized (e.g., `id` for identifier). Long and descriptive names may seem cumbersome, but they enhance code readability and maintainability.
 
-Also make sure variable names are never too simple, like `data` or `info`. Instead, use names that clearly indicate the purpose of the variable, such as `userData` or `productInfo`. This also guarantees that variable names won't conflicht with eachother in larger files.
+Also make sure variable names are never too simple, like `data` or `info`. Instead, use names that clearly indicate the purpose of the variable, such as `userData` or `productInfo`. This also guarantees that variable names won't conflict with eachother in larger files.
 
 #### Functions
 
@@ -25,7 +25,7 @@ Functions should use verbs and be clear about what action it performs. Below is 
 
 For example: `function addUserData() { ... }`
 
-Make sure the paremeters of the function have a specified type and a default value, and if the function returns something, make sure to specify the return type as well.
+Make sure the parameters of the function have a specified type and a default value, and if the function returns something, make sure to specify the return type as well.
 
 ## 2. Proper coding
 
@@ -101,7 +101,7 @@ A cheat sheet for JSDoc can be found [here](https://devhints.io/jsdoc).
 
 ## 3. Temporary files
 
-Avoid comitting temporary files that don't need to be in the repository by adding them to the `.gitignore` file. If you do need to add a temporary file to the repository, please put it in the `temp` folder.
+Avoid committing temporary files that don't need to be in the repository by adding them to the `.gitignore` file. If you do need to add a temporary file to the repository, please put it in the `temp` folder.
 
 ## 4. Markdown files and other documentation
 

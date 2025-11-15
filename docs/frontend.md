@@ -20,7 +20,7 @@ For example:
 
 ## 2. React
 
-When you create more than two HTML elements that are similar to eachother, create a React component for them.
+When you create more than two HTML elements that are similar to each other, create a React component for them.
 
 ## 3. Tailwind CSS
 
