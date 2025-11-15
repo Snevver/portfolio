@@ -62,7 +62,7 @@ class SteamAPIService
             if ($resolveResponse->successful() && $resolveResponse->json('response.success') === 1) {
                 $steamID = $resolveResponse->json('response.steamid');
             } else {
-                throw new \Exception('Failed to resolve custom URL to SteamID.');
+                throw new \Exception("Failed to resolve custom URL '{$steamID}' to SteamID. Please verify the custom ID is correct.");
             }
         }
 
