@@ -25,7 +25,7 @@ Functions should use verbs and be clear about what action it performs. Below is 
 
 For example: `function addUserData() { ... }`
 
-Make sure the paremeters of the function have a specified type and a default value, and if the function returns something, make sure to specify the return type as well.
+Make sure the parameters of the function have a specified type and a default value, and if the function returns something, make sure to specify the return type as well.
 
 ## 2. Proper coding
 
