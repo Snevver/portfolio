@@ -101,7 +101,7 @@ A cheat sheet for JSDoc can be found [here](https://devhints.io/jsdoc).
 
 ## 3. Temporary files
 
-Avoid comitting temporary files that don't need to be in the repository by adding them to the `.gitignore` file. If you do need to add a temporary file to the repository, please put it in the `temp` folder.
+Avoid committing temporary files that don't need to be in the repository by adding them to the `.gitignore` file. If you do need to add a temporary file to the repository, please put it in the `temp` folder.
 
 ## 4. Markdown files and other documentation
 
