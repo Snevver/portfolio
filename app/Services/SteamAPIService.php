@@ -23,21 +23,21 @@ class SteamAPIService
 
         // Check if it's a Steam profile URL with numeric ID
         if (preg_match('/https?:\/\/steamcommunity\.com\/profiles\/(\d+)\/?/', $input, $matches)) {
-            return ['id' => $matches[1], 'type' => 'numeric'];
+            return ['id' => $matches[1], 'userInputType' => 'numeric'];
         }
 
         // Check if it's a Steam custom URL
         if (preg_match('/https?:\/\/steamcommunity\.com\/id\/([^\/?]+)\/?/', $input, $matches)) {
-            return ['id' => $matches[1], 'type' => 'custom'];
+            return ['id' => $matches[1], 'userInputType' => 'custom'];
         }
 
         // Check if it's a numeric Steam ID (17 digits starting with 7656119)
         if (preg_match('/^7656119\d{10}$/', $input)) {
-            return ['id' => $input, 'type' => 'numeric'];
+            return ['id' => $input, 'userInputType' => 'numeric'];
         }
 
         // Assume it's a custom ID if it doesn't match the above patterns
-        return ['id' => $input, 'type' => 'custom'];
+        return ['id' => $input, 'userInputType' => 'custom'];
     }
 
     /**
@@ -50,9 +50,9 @@ class SteamAPIService
     {
         $steamData = $this->extractSteamID($input);
         $steamID = $steamData['id'];
-        $type = $steamData['type'];
+        $userInputType = $steamData['userInputType'];
 
-        if ($type === 'custom') {
+        if ($userInputType === 'custom') {
             // Resolve custom URL to numeric SteamID
             $resolveResponse = Http::get($this->customURLEndpoint, [
                 'key' => config('steam.key'),
