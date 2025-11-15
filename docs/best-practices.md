@@ -12,7 +12,7 @@ This document outlines the best practices and naming conventions to be followed 
 
 When naming variables, please avoid using acronyms or abbreviations unless they are widely recognized (e.g., `id` for identifier). Long and descriptive names may seem cumbersome, but they enhance code readability and maintainability.
 
-Also make sure variable names are never too simple, like `data` or `info`. Instead, use names that clearly indicate the purpose of the variable, such as `userData` or `productInfo`. This also guarantees that variable names won't conflicht with eachother in larger files.
+Also make sure variable names are never too simple, like `data` or `info`. Instead, use names that clearly indicate the purpose of the variable, such as `userData` or `productInfo`. This also guarantees that variable names won't conflict with eachother in larger files.
 
 #### Functions
 
