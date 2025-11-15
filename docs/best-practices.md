@@ -4,7 +4,7 @@ This document outlines the best practices and naming conventions to be followed 
 
 ## 1. Code and file naming conventions
 
--   **Files and folders:** Use snake-case for file and folder names (e.g., `my_file_name.js`).
+-   **Files and folders:** Use snake-case for file and folder names (e.g., `my-file-name.js`).
 -   **JavaScript:** In JavaScript or TypeScript, things like variables and functions should be named using camelCase (e.g., `myVariableName`).
 -   **Classes and components:** Use PascalCase for class names and React components (e.g., `MyComponent`).
 
