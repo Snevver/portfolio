@@ -25,14 +25,37 @@ export default function Welcome() {
                 body: JSON.stringify({ steamID }),
             });
 
-            const api = await response.json();
+            let api;
+            if (response.ok) {
+                try {
+                    api = await response.json();
+                } catch (jsonError) {
+                    throw new Error("Failed to parse JSON response.");
+                }
+            } else {
+                // Try to parse error message from JSON, fallback to text
+                let errorMessage = `Request failed with status ${response.status}`;
+                try {
+                    const errorData = await response.json();
+                    if (errorData && errorData.error) {
+                        errorMessage = errorData.error;
+                    }
+                } catch {
+                    // Not JSON, try text
+                    const errorText = await response.text();
+                    if (errorText) {
+                        errorMessage = errorText;
+                    }
+                }
+                throw new Error(errorMessage);
+            }
 
             if (api.error) {
                 throw new Error(api.error);
             }
 
             // Extract the first player object from the Steam API response
-            const player = api.response.players[0];
+            const player = api.response?.players?.[0];
 
             if (!player) {
                 throw new Error(
