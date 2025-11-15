@@ -1,5 +1,7 @@
 # 🎮 SteamGuessr
 
+test
+
 ## 📖 Table of Contents
 - [Prerequisites](#-prerequisites)
 - [Quick Start](#-quick-start)
