@@ -37,7 +37,7 @@ php artisan key:generate
 
 ### 4. Steam API Key Configuration
 
-Edit your `.env` file with your steam API key:
+Edit your `.env` file with your Steam API key:
 
 ```env
 # Add your Steam API key
