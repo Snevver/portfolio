@@ -26,7 +26,7 @@ composer install
 npm install
 ```
 
-### 3️. Environment Setup
+### 3. Environment Setup
 ```bash
 # Copy the environment file
 cp .env.example .env
