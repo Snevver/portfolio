@@ -83,7 +83,7 @@ When writing markdown files or other documentation, always put them in the `docs
 
 ## 5. Tasks
 
-Don't start working on a new feature without first creating a task for it on the [designated Jira board](https://snevver.atlassian.net/jira/software/projects/SCRUM/summary). Always write down how long you expect this user story to take, the priority of it, and a short description of what needs to be done.
+Don't start working on a new feature without first creating a task for it on the [designated Jira board](https://snevver.atlassian.net/jira/software/projects/SCRUM/summary). Always write down how long you expect this task to take, the priority of it, and a short description of what needs to be done.
 
 ## 6. Branches
 
