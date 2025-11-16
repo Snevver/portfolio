@@ -1,6 +1,8 @@
-**ROUTER DOCUMENTATION**
+# 📝 Router Documentation
 
-**Web Routes (`routes/web.php`)**
+This document outlines the routes of the application. It can be used to easily find the purpose of a route and the request and response data.
+
+## Web Routes (`routes/web.php`)
 
 - **GET /**
 	- **Purpose:** Renders the single-page app entry (Inertia `Welcome` component).

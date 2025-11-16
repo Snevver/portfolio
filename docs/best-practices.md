@@ -73,32 +73,6 @@ Don't use the category large and sub-category smaller font comments too often, s
 
 Make sure to always start your comment with a space and a capital letter. You do not need to finish every comment with a period.
 
-### JSDoc
-
-When writing JavaScript functions, always use JSDoc comments to describe it. This helps other developers understand the purpose and usage of the function.
-
-Make sure you:
-
--   Describe the function's purpose
--   List every parameter with its type and a brief description
--   Specify the return type and a brief description of what is returned
-
-For example:
-
-```javascript
-/**
- * Calculates the sum of two numbers.
- * @param {number} a - The first number.
- * @param {number} b - The second number.
- * @return {number} The sum of the two numbers.
- */
-function calculateSum(a, b) {
-    return a + b;
-}
-```
-
-A cheat sheet for JSDoc can be found [here](https://devhints.io/jsdoc).
-
 ## 3. Temporary files
 
 Avoid committing temporary files that don't need to be in the repository by adding them to the `.gitignore` file. If you do need to add a temporary file to the repository, please put it in the `temp` folder.
@@ -107,7 +81,7 @@ Avoid committing temporary files that don't need to be in the repository by addi
 
 When writing markdown files or other documentation, always put them in the `docs` folder. If needed, refer to them in the `README.md` file.
 
-## 5. User stories
+## 5. Tasks
 
 Don't start working on a new feature without first creating a task for it on the [designated Jira board](https://snevver.atlassian.net/jira/software/projects/SCRUM/summary). Always write down how long you expect this user story to take, the priority of it, and a short description of what needs to be done.
 
