@@ -1,6 +1,6 @@
 # 🎮 SteamGuessr
 
-SteamGuessr is a web application that allows the user play a variety of mini-games based on guessing steam games from their own library.
+SteamGuessr is a web application that allows the user to play a variety of mini-games based on guessing Steam games from their own library.
 
 
 **❗ Make sure to read the [best practices and naming conventions document](docs/best-practices.md) before working on this project!**
