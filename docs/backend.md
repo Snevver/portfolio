@@ -1,6 +1,6 @@
 # Backend best practices
 
-## 1. File Naming Conventions
+## 1. File naming conventions
 
 ### Controllers
 - Use **PascalCase** for controller names
@@ -51,7 +51,7 @@ class Game extends Model
 - Keep controllers thin - business logic is done in services or models
 - Follow RESTful conventions for resource controllers
 - Use dependency injection for services and repositories
-- Return appropriate HTTP status codes !!!
+- Return appropriate HTTP status codes
 
 ```php
 class GameController extends Controller
@@ -89,7 +89,7 @@ class StoreGameRequest extends FormRequest
 }
 ```
 
-### Service Classes
+### Service classes
 - Create service classes for complex business logic
 - Keep services focused on a single responsibility
 - Use dependency injection for service dependencies
@@ -110,9 +110,9 @@ class GameService
 }
 ```
 
-## 4. Code Organization
+## 4. Code organization
 
-### Directory Structure
+### Directory structure
 - Follow Laravel's conventional directory structure
 - Create additional directories for custom classes (Services for example)
 - Group related functionality together
@@ -169,24 +169,24 @@ try {
 }
 ```
 
-### Validation Errors
+### Validation errors
 - Return meaningful error messages
 - Use Laravel's validation message system
 - Provide user-friendly error feedback
 
-## 6. Security Best Practices
+## 6. Security best practices
 
-### Data Protection
+### Data protection
 - Use Laravel's CSRF protection for forms
 - Validate and sanitize all user inputs
 - Use mass assignment protection with `$fillable` or `$guarded`
 
-### API Security
+### API security
 - Validate API requests thoroughly
 
 ## 7. Testing
 
-### Test Structure
+### Test structure
 - Write unit tests for models and services
 - Create feature tests for complete user workflows
 - Use factories for test data generation
@@ -223,9 +223,9 @@ class GameTest extends TestCase
 - Include request/response schemas
 - Specify authentication requirements
 
-## 10. Environment configuration
+## 9. Environment configuration
 
-### Configuration Management
+### Configuration management
 - Use environment variables for configuration
 - Never commit sensitive data to version control
 - Use different configurations for different environments
