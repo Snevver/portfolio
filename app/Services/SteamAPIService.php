@@ -54,21 +54,33 @@ class SteamAPIService
 
         if ($userInputType === 'custom') {
             // Resolve custom URL to numeric SteamID
-            $resolveResponse = Http::get($this->customURLEndpoint, [
-                'key' => config('steam.key'),
-                'vanityurl' => $steamID,
-            ]);
-
-            if ($resolveResponse->successful() && $resolveResponse->json('response.success') === 1) {
-                $steamID = $resolveResponse->json('response.steamid');
-            } else {
-                throw new \Exception("Failed to resolve custom URL '{$steamID}' to SteamID. Please verify the custom ID is correct.");
-            }
+            $steamID = $this->resolveCustomURL($steamID);
         }
 
         return Http::get($this->numericIDendpoint, [
             'key' => config('steam.key'),
             'steamids' => $steamID,
         ]);
+    }
+
+    /**
+     * Resolve custom vanity name to numeric SteamID
+     * 
+     * @param string $vanityName The custom vanity name (e.g., "mycustomname", not full URL)
+     * @return string The numeric Steam ID
+     * @throws \Exception
+     */
+    private function resolveCustomURL(string $vanityName) : string
+    {
+        $response = Http::get($this->customURLEndpoint, [
+            'key' => config('steam.key'),
+            'vanityurl' => $vanityName,
+        ]);
+
+        if ($response->successful() && $response->json('response.success') === 1) {
+            return $response->json('response.steamid');
+        }
+
+        throw new \Exception("Failed to resolve custom vanity name '{$vanityName}' to SteamID. Please verify the custom vanity name is correct.");
     }
 }
