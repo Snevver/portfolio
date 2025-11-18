@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function Welcome() {
+export default function Landing() {
     // States here
     const [steamID, setSteamID] = useState("");
     const [userData, setUserData] = useState(null);

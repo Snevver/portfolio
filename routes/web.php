@@ -5,7 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\SteamAPIController;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    return Inertia::render('Landing');
 });
 
 // Route to get basic user info
