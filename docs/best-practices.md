@@ -144,6 +144,7 @@ Delete the options that are not relevant, and delete this line too.
 -   Bug fix(es) (non-breaking change which fixes an issue)
 -   New feature(s) (non-breaking change which adds functionality)
 -   Breaking change(s) (fix or feature that would cause existing functionality to not work as expected)
+-   Code refactoring (This is a change that improves the code without adding any new functionality)
 -   This change requires a documentation update
 ```
 
