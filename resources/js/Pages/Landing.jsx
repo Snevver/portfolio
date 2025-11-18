@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "../Components/Card";
 
 export default function Landing() {
@@ -6,24 +6,55 @@ export default function Landing() {
     const [userData, setUserData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isValidInput, setIsValidInput] = useState(null);
 
-    const steamIDInputFieldElement = document.getElementById("steam-id-input");
+    /**
+     * Validates if the input is a valid Steam ID or URL.
+     * Accepts:
+     * - Full Steam profile URL: https://steamcommunity.com/profiles/76561198000000000
+     * - Full custom Steam URL: https://steamcommunity.com/id/customname
+     * - Steam ID only: 76561198000000000 (17 digits, typically starts with 7656119)
+     * - Custom Steam name only: customname (alphanumeric, hyphens, underscores)
+     * @param {string} value - The value to validate.
+     * @returns {boolean} - True if valid, false otherwise.
+     */
+    function isValidSteamInput(value) {
+        if (!value || value.trim().length === 0) {
+            return null;
+        }
 
-    if (steamIDInputFieldElement) {
-        steamIDInputFieldElement.addEventListener("input", (event) => {
-            changeInputFieldBorder(event.target.value);
-        });
+        const trimmedValue = value.trim();
+
+        const fullProfileUrlPattern =
+            /^https?:\/\/(www\.)?steamcommunity\.com\/profiles\/(7656119\d{10})\/?$/;
+        const fullCustomUrlPattern =
+            /^https?:\/\/(www\.)?steamcommunity\.com\/id\/([a-zA-Z0-9_-]+)\/?$/;
+        const steamIdPattern = /^7656119\d{10}$/;
+        const customNamePattern = /^[a-zA-Z0-9_-]+$/;
+
+        if (
+            fullProfileUrlPattern.test(trimmedValue) ||
+            fullCustomUrlPattern.test(trimmedValue) ||
+            steamIdPattern.test(trimmedValue) ||
+            customNamePattern.test(trimmedValue)
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
-     * Changes the border color of the input field to red or green depending on the validity of the user input.
-     * @param {string} value - The value of the input field.
+     * Updates the validation state when steamID changes.
      */
-    function changeInputFieldBorder(value) {
-        if (steamIDInputFieldElement && value.length > 0) {
-            
+    useEffect(() => {
+        const validation = isValidSteamInput(steamID);
+        setIsValidInput(validation);
+        // Clear error when input becomes valid
+        if (validation === true && error) {
+            setError(null);
         }
-    }
+    }, [steamID]);
 
     /**
      * Fetches the user data from the Steam API using the submitSteamID function.
@@ -111,7 +142,13 @@ export default function Landing() {
                         <form className="space-y-4" onSubmit={getBasicData}>
                             <div className="relative">
                                 <input
-                                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className={`w-full px-4 py-3 bg-gray-800/50 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
+                                        isValidInput === false
+                                            ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                                            : isValidInput === true
+                                            ? "border-green-500 focus:ring-green-500 focus:border-green-500"
+                                            : "border-gray-700 focus:ring-blue-500 focus:border-transparent"
+                                    }`}
                                     id="steam-id-input"
                                     type="text"
                                     value={steamID}
