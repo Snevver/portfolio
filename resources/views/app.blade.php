@@ -12,7 +12,7 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Favicon -->
-        <link rel="shortcut icon" href="d-pad.png" type="image/x-icon">
+        <link rel="shortcut icon" href="logoWhite.png" type="image/x-icon">
 
         <!-- Scripts -->
         @routes
