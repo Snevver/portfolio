@@ -7,6 +7,7 @@ export default function Landing() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isValidInput, setIsValidInput] = useState(null);
+    const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
     /**
      * Validates if the input is a valid Steam ID or URL.
@@ -114,8 +115,8 @@ export default function Landing() {
 
             <div className="flex flex-col justify-between min-h-screen relative z-10">
                 {/* Header */}
-                <header className="text-center pt-16 pb-8 px-4 animate-fade-in">
-                    <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent animate-gradient">
+                <header className="text-center pt-32 sm:pt-16 pb-8 px-4 animate-fade-in">
+                    <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent animate-gradient">
                         SteamGuessr
                     </h1>
                     <h2 className="text-lg sm:text-xl md:text-2xl text-gray-300 font-light">
@@ -133,7 +134,10 @@ export default function Landing() {
                             <p className="text-gray-400 text-sm">
                                 Paste your Steam profile URL, Steam ID, or
                                 custom ID to get started.{" "}
-                                <button className="text-blue-500 hover:underline">
+                                <button
+                                    onClick={() => setIsHelpModalOpen(true)}
+                                    className="text-blue-500 hover:underline"
+                                >
                                     Need help?
                                 </button>
                             </p>
@@ -225,6 +229,87 @@ export default function Landing() {
                     . All rights reserved.
                 </footer>
             </div>
+
+            {/* Help Modal */}
+            {isHelpModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <Card
+                        className="flex flex-col gap-5 w-full max-w-2xl max-h-[90vh] overflow-y-auto break-words animate-fade-in"
+                        transparency={90}
+                    >
+                        <h3 className="text-2xl font-semibold text-center">
+                            Need help finding your Steam ID?
+                        </h3>
+
+                        <div className="space-y-1">
+                            <p className="text-xl font-semibold">
+                                Where to find your Steam ID:
+                            </p>
+
+                            <ul className="space-y-1">
+                                <li>
+                                    1. Open Steam and navigate to your profile
+                                    page
+                                </li>
+
+                                <li>
+                                    2. Click on the URL in the top left to copy
+                                    it, or right click on your profile and
+                                    select "Copy Page URL"
+                                </li>
+
+                                <li>
+                                    3. Paste the URL into the input field and
+                                    click "Get Started"
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div className="space-y-1">
+                            <p className="text-xl font-semibold">
+                                You can use any of these formats:
+                            </p>
+
+                            <ul className="space-y-1">
+                                <li>
+                                    • Your full Steam profile URL:{" "}
+                                    <span className="bg-gray-900/60 px-2 py-1 rounded-md font-mono break-all inline-block">
+                                        https://steamcommunity.com/profiles/76561198000000000
+                                    </span>
+                                </li>
+
+                                <li>
+                                    • Your full custom Steam URL:{" "}
+                                    <span className="bg-gray-900/60 px-2 py-1 rounded-md font-mono break-all inline-block">
+                                        https://steamcommunity.com/id/customname
+                                    </span>
+                                </li>
+
+                                <li>
+                                    • Your Steam ID only:{" "}
+                                    <span className="bg-gray-900/60 px-2 py-1 rounded-md font-mono break-all inline-block">
+                                        76561198000000000
+                                    </span>
+                                </li>
+
+                                <li>
+                                    • Your custom Steam name only:{" "}
+                                    <span className="bg-gray-900/60 px-2 py-1 rounded-md font-mono break-all inline-block">
+                                        customname
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <button
+                            onClick={() => setIsHelpModalOpen(false)}
+                            className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg shadow-blue-500/25"
+                        >
+                            Got it!
+                        </button>
+                    </Card>
+                </div>
+            )}
         </div>
     );
 }
