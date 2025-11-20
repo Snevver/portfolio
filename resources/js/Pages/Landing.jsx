@@ -115,10 +115,10 @@ export default function Landing() {
                 body: JSON.stringify({ steamID, isCustomID }),
             }).then((response) => response.json());
 
-            if (response.data.success) {
-                console.log(
-                    "Success, user can now be redirected to the dashboard"
-                );
+            if (response.ok) {
+                
+                
+                // REDIRECT USER TO DASHBOARD
             } else {
                 setError(response.data.message);
             }
@@ -131,7 +131,7 @@ export default function Landing() {
     }
 
     return (
-        <Layout>
+        <Layout playFadeIn={true}>
             <Card className="space-y-6 animate-fade-in w-full max-w-2xl">
                 <div className="text-center space-y-2">
                     <h3 className="text-2xl font-semibold text-white">

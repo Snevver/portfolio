@@ -18,6 +18,21 @@
         animation: fade-in 0.5s ease-out;
     }
 
+    @keyframes swipe-out {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+    }
+    
+    .animate-swipe-out {
+        animation: swipe-out 0.5s ease-out;
+    }
+
     @keyframes title-gradient {
         0%,
         100% {
