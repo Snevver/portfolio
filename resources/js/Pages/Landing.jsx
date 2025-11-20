@@ -239,6 +239,7 @@ export default function Landing() {
                     <a
                         href="https://github.com/Snevver"
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="hover:underline"
                     >
                         Sven Hoeksema
@@ -247,6 +248,7 @@ export default function Landing() {
                     <a
                         href="https://github.com/Penguin-09"
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="hover:underline"
                     >
                         Son Bram van der Burg
