@@ -20,11 +20,11 @@ export default function Landing() {
      * @returns {boolean} - True if valid, false otherwise.
      */
     function isValidSteamInput(value) {
-        if (!value || value.trim().length === 0) {
+        const trimmedValue = value.trim();
+
+        if (!value || trimmedValue.length === 0) {
             return null;
         }
-
-        const trimmedValue = value.trim();
 
         const fullProfileUrlPattern =
             /^https?:\/\/(www\.)?steamcommunity\.com\/profiles\/(7656119\d{10})\/?$/;
@@ -34,10 +34,11 @@ export default function Landing() {
         const customNamePattern = /^[a-zA-Z0-9_-]+$/;
 
         if (
-            fullProfileUrlPattern.test(trimmedValue) ||
-            fullCustomUrlPattern.test(trimmedValue) ||
-            steamIdPattern.test(trimmedValue) ||
-            customNamePattern.test(trimmedValue)
+            (fullProfileUrlPattern.test(trimmedValue) ||
+                fullCustomUrlPattern.test(trimmedValue) ||
+                steamIdPattern.test(trimmedValue) ||
+                customNamePattern.test(trimmedValue)) &&
+            trimmedValue.length > 3
         ) {
             return true;
         } else {
@@ -235,7 +236,7 @@ export default function Landing() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <Card
                         className="flex flex-col gap-5 w-full max-w-2xl max-h-[90vh] overflow-y-auto break-words animate-fade-in"
-                        transparency={90}
+                        transparency={95}
                     >
                         <h3 className="text-2xl font-semibold text-center">
                             Need help finding your Steam ID?
