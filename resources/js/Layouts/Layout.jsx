@@ -12,7 +12,7 @@ export default function Layout({ children }) {
             <div className="flex flex-col justify-between min-h-screen relative z-10">
                 {/* Header */}
                 <header className="text-center pt-32 sm:pt-16 pb-8 px-4 animate-fade-in">
-                    <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent animate-gradient">
+                    <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent animate-title-gradient">
                         SteamGuessr
                     </h1>
                     <h2 className="text-lg sm:text-xl md:text-2xl text-gray-300 font-light">
