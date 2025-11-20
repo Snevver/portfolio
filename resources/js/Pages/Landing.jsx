@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../Layouts/Layout";
 import Card from "../Components/Card";
+import Button from "../Components/Button";
 
 export default function Landing() {
     const [steamID, setSteamID] = useState("");
@@ -174,10 +175,10 @@ export default function Landing() {
                         </div>
                     )}
 
-                    <button
+                    <Button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg shadow-blue-500/25"
+                        ariaLabel="Submit Steam ID"
                     >
                         {isLoading ? (
                             <span className="flex items-center justify-center">
@@ -206,7 +207,7 @@ export default function Landing() {
                         ) : (
                             "Get Started"
                         )}
-                    </button>
+                    </Button>
                 </form>
             </Card>
 
@@ -298,13 +299,12 @@ export default function Landing() {
                             </ul>
                         </div>
 
-                        <button
+                        <Button
                             onClick={() => setIsHelpModalOpen(false)}
-                            aria-label="Close help modal"
-                            className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg shadow-blue-500/25"
+                            ariaLabel="Close help modal"
                         >
                             Got it!
-                        </button>
+                        </Button>
                     </Card>
                 </div>
             )}
