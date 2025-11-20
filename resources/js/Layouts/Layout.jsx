@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Layout({ children }) {
+export default function Layout({ children, playFadeIn = false }) {
     return (
         <div
             className={`min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100`}
