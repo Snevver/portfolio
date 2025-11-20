@@ -56,7 +56,31 @@ export default function Landing() {
         if (validation === true && error) {
             setError(null);
         }
-    }, [steamID]);
+    }, [steamID, error]);
+
+    /**
+     * Handles ESC key press to close the help modal and prevents body scroll when modal is open.
+     */
+    useEffect(() => {
+        if (isHelpModalOpen) {
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = "hidden";
+
+            // Handle ESC key press
+            const handleEscape = (event) => {
+                if (event.key === "Escape") {
+                    setIsHelpModalOpen(false);
+                }
+            };
+
+            document.addEventListener("keydown", handleEscape);
+
+            return () => {
+                document.body.style.overflow = "";
+                document.removeEventListener("keydown", handleEscape);
+            };
+        }
+    }, [isHelpModalOpen]);
 
     /**
      * Fetches the user data from the Steam API using the submitSteamID function.
@@ -234,11 +258,28 @@ export default function Landing() {
             {/* Help Modal */}
             {isHelpModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    {/* Backdrop */}
+                    <div
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                        aria-hidden="true"
+                        onClick={() => setIsHelpModalOpen(false)}
+                    ></div>
+
                     <Card
-                        className="flex flex-col gap-5 w-full max-w-2xl max-h-[90vh] overflow-y-auto break-words animate-fade-in"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="help-modal-title"
+                        className="flex flex-col gap-5 w-full max-w-2xl max-h-[90vh] overflow-y-auto break-words animate-fade-in relative z-10"
                         transparency={95}
+                        onClick={(e) => {
+                            // Prevent modal from closing when clicking inside the card
+                            e.stopPropagation();
+                        }}
                     >
-                        <h3 className="text-2xl font-semibold text-center">
+                        <h3
+                            id="help-modal-title"
+                            className="text-2xl font-semibold text-center"
+                        >
                             Need help finding your Steam ID?
                         </h3>
 
@@ -304,6 +345,7 @@ export default function Landing() {
 
                         <button
                             onClick={() => setIsHelpModalOpen(false)}
+                            aria-label="Close help modal"
                             className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg shadow-blue-500/25"
                         >
                             Got it!
