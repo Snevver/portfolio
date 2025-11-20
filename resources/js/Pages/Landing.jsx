@@ -130,6 +130,7 @@ export default function Landing() {
 
     return (
         <Layout playFadeIn={true}>
+            {/* SteamID Input */}
             <Card className="space-y-6 animate-fade-in w-full max-w-2xl">
                 <div className="text-center space-y-2">
                     <h3 className="text-2xl font-semibold text-white">
