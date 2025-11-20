@@ -3,7 +3,7 @@ import Card from "../Components/Card";
 
 export default function Landing() {
     const [steamID, setSteamID] = useState("");
-    const [userData, setUserData] = useState(null);
+    const [isCustomID, setIsCustomID] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isValidInput, setIsValidInput] = useState(null);
@@ -26,21 +26,28 @@ export default function Landing() {
             return null;
         }
 
-        const fullProfileUrlPattern =
-            /^https?:\/\/(www\.)?steamcommunity\.com\/profiles\/(7656119\d{10})\/?$/;
-        const fullCustomUrlPattern =
-            /^https?:\/\/(www\.)?steamcommunity\.com\/id\/([a-zA-Z0-9_-]+)\/?$/;
-        const steamIdPattern = /^7656119\d{10}$/;
-        const customNamePattern = /^[a-zA-Z0-9_-]+$/;
-
-        if (
-            (fullProfileUrlPattern.test(trimmedValue) ||
-                fullCustomUrlPattern.test(trimmedValue) ||
-                steamIdPattern.test(trimmedValue) ||
-                customNamePattern.test(trimmedValue)) &&
-            trimmedValue.length > 3
-        ) {
-            return true;
+        if (trimmedValue.length > 3) {
+            if (
+                /^7656119\d{10}$/.test(trimmedValue) ||
+                /^https?:\/\/(www\.)?steamcommunity\.com\/profiles\/(7656119\d{10})\/?$/.test(
+                    trimmedValue
+                )
+            ) {
+                // Numeric ID
+                setIsCustomID(false);
+                return true;
+            } else if (
+                /^[a-zA-Z0-9_-]+$/.test(trimmedValue) ||
+                /^https?:\/\/(www\.)?steamcommunity\.com\/id\/([a-zA-Z0-9_-]+)\/?$/.test(
+                    trimmedValue
+                )
+            ) {
+                // Custom ID
+                setIsCustomID(true);
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -83,51 +90,42 @@ export default function Landing() {
     }, [isHelpModalOpen]);
 
     /**
-     * Fetches the user data from the Steam API using the submitSteamID function.
+     * Submits the Steam ID to the API route to check if the Steam ID is valid.
      * @param {Event} event - The event object, used to prevent the default behavior.
      */
-    async function getBasicData(event) {
+    async function submitSteamID(event) {
         event.preventDefault();
         setIsLoading(true);
         setError(null);
+
         const csrfToken = document.querySelector(
             'meta[name="csrf-token"]'
         )?.content;
 
-        await submitSteamID(steamID, csrfToken);
-        setIsLoading(false);
-    }
-
-    /**
-     * Submits the Steam ID to the API route to get the user data.
-     * @param {string} steamID - The Steam ID to submit.
-     * @param {string} csrfToken - The CSRF token to use for the request.
-     */
-    async function submitSteamID(steamID, csrfToken) {
         try {
-            // Send POST request to the API route
-            const response = await fetch("/get-basic-info", {
+            // Send POST request to the API route to check if the Steam ID is valid
+            const response = await fetch("/validate-user", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": csrfToken,
                 },
-                body: JSON.stringify({ steamID }),
+                body: JSON.stringify({ steamID, isCustomID }),
             }).then((response) => response.json());
 
-            // Extract the first player object from the Steam API response
-            const player = response.response?.players?.[0];
-
-            if (!player) {
-                throw new Error("No Steam user found with that ID or URL.");
+            if (response.data.success) {
+                console.log(
+                    "Success, user can now be redirected to the dashboard"
+                );
+            } else {
+                setError(response.data.message);
             }
-
-            // Put user data into new object and set state
-            setUserData({ ...player });
         } catch (error) {
-            console.error("Error fetching Steam data:", error);
+            console.error("Error submitting Steam ID:", error);
             setError(error.message);
         }
+
+        setIsLoading(false);
     }
 
     return (
@@ -168,7 +166,7 @@ export default function Landing() {
                             </p>
                         </div>
 
-                        <form className="space-y-4" onSubmit={getBasicData}>
+                        <form className="space-y-4" onSubmit={submitSteamID}>
                             <div className="relative">
                                 <input
                                     className={`w-full px-4 py-3 bg-gray-800/50 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
