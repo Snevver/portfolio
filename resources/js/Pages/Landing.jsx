@@ -116,8 +116,6 @@ export default function Landing() {
             }).then((response) => response.json());
 
             if (response.ok) {
-                
-                
                 // REDIRECT USER TO DASHBOARD
             } else {
                 setError(response.data.message);
