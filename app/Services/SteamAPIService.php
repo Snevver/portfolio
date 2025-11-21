@@ -26,12 +26,12 @@ class SteamAPIService
         $input = preg_replace('/.*\/([^\/]+)\/?$/', '$1', $input);
 
         // If input is a custom id, resolve to numeric SteamID. Otherwise use input directly
-        $steamID = $isCustomID ? $this->resolveCustomID($input) : $input;
+        $userSteamID = $isCustomID ? $this->resolveCustomID($input) : $input;
 
         // Fetch and return player object
         return Http::get($this->numericIDendpoint, [
             'key' => config('steam.key'),
-            'steamids' => $steamID,
+            'steamids' => $userSteamID,
         ]);
     }
 

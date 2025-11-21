@@ -9,10 +9,18 @@ This document outlines the routes of the application. It can be used to easily f
 - **POST /validate-user**
 	- **Purpose:** Validate whether a Steam user exists for a provided Steam profile input.
 	- **Request (JSON body):**
-		- `steamID` (required, string) — Steam profile URL, numeric SteamID, or vanity name
-		- `isCustomID` (required, boolean) — whether the provided `steamID` is a custom vanity name that requires resolution
-	- **Validation:** Controller validates `steamID` (`required|string`) and `isCustomID` (`required|boolean`).
-	- **Behavior:** Controller delegates to `App\Services\SteamAPIService::fetchPlayerSummary()` (service resolves vanity names when needed), then returns an HTTP status indicating existence.
-	- **Response:**
-		- `204 No Content` — Steam user exists (empty body)
-		- `404 Not Found` — Steam user does not exist or resolution failed
+		- `userSteamID` (required, string) — Steam profile URL, numeric SteamID, or vanity name
+		- `isCustomID` (required, boolean) — whether the provided `userSteamID` is a custom vanity name that requires resolution
+	- **Validation:** Controller validates `userSteamID` (`required|string`) and `isCustomID` (`required|boolean`).
+	- **Behavior:** Controller delegates to `App\Services\SteamAPIService::fetchPlayerSummary()` (service resolves vanity names when needed). The controller returns a consistent JSON shape so the frontend always receives the same structure whether the user exists or not.
+	- **Response (JSON body):**
+		- `200 OK` — user found
+			- Body: `{ "userSteamID": "76561199...", "isAvailable": true }`
+		- `200 OK` — user not found
+			- Body: `{ "userSteamID": null, "isAvailable": false }`
+		- `502 / 500` — upstream error or internal error (body retains same shape)
+			- Body: `{ "userSteamID": null, "isAvailable": false }`
+
+	Notes:
+	- `userSteamID` is returned as a string (not a numeric JSON value) to avoid integer precision loss in JavaScript. Treat it as a string in the frontend.
+	- If `isCustomID` is `true`, the service will attempt to resolve the vanity name; if resolution fails the controller treats the result as "not found" and returns `{ userSteamID: null, isAvailable: false }`.
