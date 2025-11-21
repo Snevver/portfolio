@@ -4,7 +4,11 @@ This document outlines the routes of the application. It can be used to easily f
 
 ## Web Routes (`routes/web.php`)
 
--   **GET /**
+ -   **GET /**
+ 	- **Purpose:** Render the landing page where users can submit their Steam profile (uses Inertia).
+ 	- **Parameters:** None (standard GET)
+ 	- **Response:** HTML page rendered via Inertia. The frontend component is `resources/js/Pages/Landing.jsx` and handles the Steam ID submission flow.
+ 	- **Notes:** This is an entry point for unauthenticated users; it does not return JSON.
 
 - **POST /validate-user**
 	- **Purpose:** Validate whether a Steam user exists for a provided Steam profile input.

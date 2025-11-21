@@ -32,41 +32,23 @@ class SteamAPIController extends Controller
         try {
             $response = $steam->fetchPlayerSummary($request->userSteamID, $request->isCustomID);
 
-            // AI created this if statement. It basically makes sure the value is a real,
-            // usable HTTP response (or converts a promise into one) before we call ->successful().
-            // I honestly don't fully understand but it works.
-            if (!is_object($response) || !method_exists($response, 'successful')) {
-                if (is_object($response) && method_exists($response, 'wait')) {
-                    $inner = $response->wait();
-
-                    if ($inner instanceof PsrResponseInterface) {
-                        $response = new HttpClientResponse($inner);
-                    } else {
-                        // Unexpected inner type; throw to be handled below
-                        throw new \Exception('Unexpected inner response type from Steam API promise.');
-                    }
-                } else {
-                    throw new \Exception('Unexpected response type from SteamAPIService.');
-                }
-            }
-
             if ($response->successful()) {
                 $json = $response->json();
                 $player = $json['response']['players'][0] ?? null;
-                $isAvailable = $json['response']['players'][0]['communityvisibilitystate'] === 3;
 
-                // Return the steadID (numeric) id the user exists
                 if ($player) {
                     $userSteamID = $player['steamid'] ?? null;
+                    $isAvailable = ($player['communityvisibilitystate'] ?? null) === 3 && $userSteamID !== null;
+
                     return response()->json([
                         'userSteamID' => $userSteamID,
-                        'isAvailable' => $isAvailable
+                        'isAvailable' => $isAvailable,
                     ]);
                 }
 
                 return response()->json([
                     'userSteamID' => null,
-                    'isAvailable' => false
+                    'isAvailable' => false,
                 ]);
             }
 
