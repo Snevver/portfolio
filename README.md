@@ -90,3 +90,5 @@ This project is licensed under the MIT License.
 Backend developer: [Sven Hoeksema](https://github.com/Snevver)
 
 Frontend developer: [Son Bram van der Burg](https://github.com/Penguin-09)
+
+Logo designer: [Arwen Bakhuisen]()
