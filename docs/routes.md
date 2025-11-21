@@ -4,8 +4,7 @@ This document outlines the routes of the application. It can be used to easily f
 
 ## Web Routes (`routes/web.php`)
 
-- **GET /**
-	- **Purpose:** Renders the single-page app entry (Inertia `Welcome` component).
+-   **GET /**
 
 - **POST /validate-user**
 	- **Purpose:** Validate whether a Steam user exists for a provided Steam profile input.

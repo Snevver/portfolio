@@ -11,6 +11,24 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Favicon -->
+        <link rel="icon" id="favicon" href="/images/logo-white.png" type="image/png">
+        <script>
+            (function() {
+                function updateFavicon() {
+                    const favicon = document.getElementById('favicon');
+                    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    favicon.href = isDarkMode ? '/images/logo-white.png' : '/images/logo-black.png';
+                }
+                
+                // Set initial favicon
+                updateFavicon();
+                
+                // Listen for color scheme changes
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFavicon);
+            })();
+        </script>
+
         <!-- Scripts -->
         @routes
         @viteReactRefresh

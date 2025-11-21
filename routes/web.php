@@ -5,7 +5,11 @@ use Inertia\Inertia;
 use App\Http\Controllers\SteamAPIController;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    return Inertia::render('Landing');
+});
+
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
 });
 
 // Route to validate if a user exists
