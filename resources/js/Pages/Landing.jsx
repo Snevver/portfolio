@@ -114,7 +114,7 @@ export default function Landing() {
                     "X-CSRF-TOKEN": csrfToken,
                 },
                 body: JSON.stringify({
-                    userSteamID: userSteamID,
+                    userSteamID,
                     isCustomID: isCustomID,
                 }),
             });
