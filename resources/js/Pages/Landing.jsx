@@ -131,7 +131,7 @@ export default function Landing() {
                     );
                     router.visit("/dashboard");
                 } else {
-                    //Tell user to set profile to public
+                    // Tell user to set profile to public
                     console.log("Error: Profile not public");
                     setError(
                         "The profile you entered is not public. Please set your profile visibility to public in your privacy settings."
