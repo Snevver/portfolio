@@ -8,8 +8,8 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 });
 
-// Route to get basic user info
-Route::post('/get-basic-info', [
+// Route to validate if a user exists
+Route::post('/validate-user', [
     SteamAPIController::class,
-    'getBasicInfo'
+    'validateUser'
 ]);

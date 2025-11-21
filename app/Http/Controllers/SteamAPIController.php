@@ -13,26 +13,32 @@ class SteamAPIController extends Controller
      * 
      * @param Request $request
      * @param SteamAPIService $steam
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse 204|404
      */
-    public function getBasicInfo(Request $request, SteamAPIService $steam)
+    public function validateUser(Request $request, SteamAPIService $steam)
     {
         // Validate the request
         $request->validate([
-            'steamID' => 'required|string'
+            'steamID' => 'required|string',
+            'isCustomID' => 'required|boolean'
         ]);
 
         // Fetch player summary from Steam API
         try {
-            $response = $steam->fetchPlayerSummary($request->steamID);
+            $response = $steam->fetchPlayerSummary($request->steamID, $request->isCustomID);
 
             if ($response->successful()) {
-                return response()->json($response->json());
+                $json = $response->json();
+                $exists = !empty($json['response']['players'][0] ?? null);
+
+                if ($exists) return response('', 204);
+
+                return response('', 404);
             }
 
-            return response()->json(['error' => 'Steam API request failed'], 400);
+            return response('', 404);
         } catch (\Throwable $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response('', 404);
         }
     }
 }
