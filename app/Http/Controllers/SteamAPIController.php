@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\SteamAPIService;
+use Illuminate\Support\Facades\Log;
 
 class SteamAPIController extends Controller
 {
@@ -13,7 +14,7 @@ class SteamAPIController extends Controller
      * 
      * @param Request $request
      * @param SteamAPIService $steam
-     * @return \Illuminate\Http\JsonResponse 204|404
+     * @return \Illuminate\Http\Response 204|404
      */
     public function validateUser(Request $request, SteamAPIService $steam)
     {
@@ -36,9 +37,11 @@ class SteamAPIController extends Controller
                 return response('', 404);
             }
 
-            return response('', 404);
+            return response('', 502);
         } catch (\Throwable $e) {
-            return response('', 404);
+            // ERROR: Log and return 500
+            Log::error('validateUser error: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return response('', 500);
         }
     }
 }

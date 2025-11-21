@@ -14,15 +14,15 @@ class SteamAPIService
      * Fetch player summary from Steam API.
      *
      * @param string $input Raw input (URL, numeric ID, or custom ID)
-     * @param bool $isCustomID Whether the provided input is a custom steam id
+     * @param bool $isCustomID Whether the provided input is a custom Steam ID
      * @return \Illuminate\Http\Client\Response
      */
     public function fetchPlayerSummary(string $input, bool $isCustomID)
     {
         $input = trim($input);
 
-        // Remove everything from the input, except for the content after the last '/'. 
-        //This will get the ID, no matter what format is submitted
+        // Remove everything from the input except for the content after the last '/'. 
+        // This will get the ID, no matter what format is submitted
         $input = preg_replace('/.*\/([^\/]+)\/?$/', '$1', $input);
 
         // If input is a custom id, resolve to numeric SteamID. Otherwise use input directly
@@ -50,7 +50,7 @@ class SteamAPIService
             'vanityurl' => $vanityName,
         ]);
 
-        if ($response->successful() && $response->json('response.success') == 1) {
+        if ($response->successful() && $response->json('response.success') === 1) {
             return $response->json('response.steamid');
         }
 

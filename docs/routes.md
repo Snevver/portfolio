@@ -15,5 +15,5 @@ This document outlines the routes of the application. It can be used to easily f
 	- **Validation:** Controller validates `steamID` (`required|string`) and `isCustomID` (`required|boolean`).
 	- **Behavior:** Controller delegates to `App\Services\SteamAPIService::fetchPlayerSummary()` (service resolves vanity names when needed), then returns an HTTP status indicating existence.
 	- **Response:**
-		- `200 OK` — Steam user exists (empty body)
+		- `204 No Content` — Steam user exists (empty body)
 		- `404 Not Found` — Steam user does not exist or resolution failed
