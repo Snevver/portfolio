@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { router } from "@inertiajs/react";
 import Layout from "../Layouts/Layout";
 import Card from "../Components/Card";
 import Button from "../Components/Button";
 
 export default function Landing() {
-    const [steamID, setSteamID] = useState("");
+    const [userSteamID, setUserSteamID] = useState("");
     const [isCustomID, setIsCustomID] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -21,7 +22,7 @@ export default function Landing() {
      * @param {string} value - The value to validate.
      * @returns {boolean} - True if valid, false otherwise.
      */
-    function isValidSteamInput(value) {
+    function isValidUserSteamID(value) {
         const trimmedValue = value.trim();
 
         if (!value || trimmedValue.length === 0) {
@@ -56,16 +57,16 @@ export default function Landing() {
     }
 
     /**
-     * Updates the validation state when steamID changes.
+     * Updates the validation state when user steamID changes.
      */
     useEffect(() => {
-        const validation = isValidSteamInput(steamID);
+        const validation = isValidUserSteamID(userSteamID);
         setIsValidInput(validation);
         // Clear error when input becomes valid
         if (validation === true && error) {
             setError(null);
         }
-    }, [steamID, error]);
+    }, [userSteamID]);
 
     /**
      * Handles ESC key press to close the help modal and prevents body scroll when modal is open.
@@ -92,10 +93,10 @@ export default function Landing() {
     }, [isHelpModalOpen]);
 
     /**
-     * Submits the Steam ID to the API route to check if the Steam ID is valid.
+     * Submits the User Steam ID to the API route to check if the User Steam ID is valid.
      * @param {Event} event - The event object, used to prevent the default behavior.
      */
-    async function submitSteamID(event) {
+    async function submitUserSteamID(event) {
         event.preventDefault();
         setIsLoading(true);
         setError(null);
@@ -105,32 +106,51 @@ export default function Landing() {
         )?.content;
 
         try {
-            // Send POST request to the API route to check if the Steam ID is valid
-            const response = await fetch("/validate-user", {
+            // Send POST request to the API route to check if the User Steam ID is valid
+            const rawResponse = await fetch("/validate-user", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": csrfToken,
                 },
-                body: JSON.stringify({ steamID, isCustomID }),
-            }).then((response) => response.json());
+                body: JSON.stringify({
+                    userSteamID,
+                    isCustomID: isCustomID,
+                }),
+            });
 
-            if (response.ok) {
-                // REDIRECT USER TO DASHBOARD
+            const validationResponse = await rawResponse.json();
+
+            // Check if the user exists
+            if (validationResponse.userSteamID) {
+                if (validationResponse.isAvailable) {
+                    // Store ID locally and redirect to the dashboard
+                    sessionStorage.setItem(
+                        "userSteamID",
+                        validationResponse.userSteamID
+                    );
+                    router.visit("/dashboard");
+                } else {
+                    // Tell user to set profile to public
+                    console.log("Error: Profile not public");
+                    setError(
+                        "The profile you entered is not public. Please set your profile visibility to public in your privacy settings."
+                    );
+                }
             } else {
-                setError(response.data.message);
+                setError(validationResponse.data?.message || "User not found");
             }
         } catch (error) {
-            console.error("Error submitting Steam ID:", error);
+            console.error("Error submitting User Steam ID:", error);
             setError(error.message);
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     }
 
     return (
         <Layout playFadeIn={true}>
-            {/* SteamID Input */}
+            {/* User Steam ID Input */}
             <Card className="space-y-6 animate-fade-in w-full max-w-2xl">
                 <div className="text-center space-y-2">
                     <h3 className="text-2xl font-semibold text-white">
@@ -148,7 +168,7 @@ export default function Landing() {
                     </p>
                 </div>
 
-                <form className="space-y-4" onSubmit={submitSteamID}>
+                <form className="space-y-4" onSubmit={submitUserSteamID}>
                     <div className="relative">
                         <input
                             className={`w-full px-4 py-3 bg-gray-800/50 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
@@ -160,10 +180,12 @@ export default function Landing() {
                             }`}
                             id="steam-id-input"
                             type="text"
-                            value={steamID}
+                            value={userSteamID}
                             required
                             placeholder="https://steamcommunity.com/id/yourprofile"
-                            onChange={(event) => setSteamID(event.target.value)}
+                            onChange={(event) =>
+                                setUserSteamID(event.target.value)
+                            }
                             disabled={isLoading}
                         />
                     </div>
@@ -177,7 +199,7 @@ export default function Landing() {
                     <Button
                         type="submit"
                         disabled={isLoading}
-                        ariaLabel="Submit Steam ID"
+                        ariaLabel="Submit User Steam ID"
                     >
                         {isLoading ? (
                             <span className="flex items-center justify-center">
