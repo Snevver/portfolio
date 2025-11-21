@@ -18,7 +18,22 @@
         animation: fade-in 0.5s ease-out;
     }
 
-    @keyframes gradient {
+    @keyframes swipe-out {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+    }
+    
+    .animate-swipe-out {
+        animation: swipe-out 0.5s ease-out;
+    }
+
+    @keyframes title-gradient {
         0%,
         100% {
             background-position: 0% 50%;
@@ -28,8 +43,8 @@
         }
     }
 
-    .animate-gradient {
+    .animate-title-gradient {
         background-size: 200% 200%;
-        animation: gradient 3s ease infinite;
+        animation: title-gradient 3s ease infinite;
     }
 }

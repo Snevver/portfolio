@@ -8,6 +8,10 @@ Route::get('/', function () {
     return Inertia::render('Landing');
 });
 
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+});
+
 // Route to get basic user info
 Route::post('/get-basic-info', [
     SteamAPIController::class,
