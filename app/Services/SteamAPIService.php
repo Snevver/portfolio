@@ -11,36 +11,47 @@ class SteamAPIService
     private string $numericIDendpoint = 'https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/';
     private string $customURLEndpoint = 'https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/';
     private string $ownedGamesEndpoint = 'https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/';
+    private string $apiKey;
+
+    // Constructor to initialize API key
+    public function __construct()
+    {
+        $this->apiKey = config('steam.key');
+    }
 
     /**
      * Fetch player summary from Steam API.
      *
-     * @param string $input Raw input (URL, numeric ID, or custom ID) || Optional if session has userSteamID
-     * @param bool $isCustomID Whether the provided input is a custom Steam ID || Optional if session has userSteamID
+     * @param string $input Raw input (URL, numeric ID, or custom ID)
+     * @param bool $isCustomID Whether the provided input is a custom Steam ID
      * @return \Illuminate\Http\Client\Response
      */
-    public function fetchPlayerSummary(string $input = '', bool $isCustomID = false)
+    public function fetchPlayerSummary(string $input, bool $isCustomID = false)
     {
-        // Only sanitize input if session does not already have userSteamID
-        $userSteamID = session()->get('userSteamID') ?? $this->sanitizeInput($input, $isCustomID);
+        $userSteamID = $this->sanitizeInput($input, $isCustomID);
 
-        // Fetch and return player object
         return Http::get($this->numericIDendpoint, [
-            'key' => config('steam.key'),
-            'steamids' => $userSteamID,
-        ]);
+                'key' => $this->apiKey,
+                'steamids' => $userSteamID,
+            ]);
     }
 
     /**
      * Sanitize input
+     *
+     * @param string $input Raw input (URL, numeric ID, or custom ID)
+     * @param bool $isCustomID Whether the provided input is a custom Steam ID
+     * @return string The sanitized Steam ID (numeric)
      */
-    public function sanitizeInput(string $input, bool $isCustomID): string
+    private function sanitizeInput(string $input, bool $isCustomID): string
     {
         $input = trim($input);
 
         // Remove everything from the input except for the content after the last '/'. 
         // This will get the ID, no matter what format is submitted
-        $input = preg_replace('/.*\/([^\/]+)\/?$/', '$1', $input);
+        if (preg_match('#/([^/]+)/?$#', $input, $matches)) {
+            $input = $matches[1];
+        }
 
         // If input is a custom id, resolve to numeric SteamID. Otherwise use input directly
         return $isCustomID ? $this->resolveCustomID($input) : $input;
@@ -57,9 +68,9 @@ class SteamAPIService
     private function resolveCustomID(string $vanityName): string
     {
         $response = Http::get($this->customURLEndpoint, [
-            'key' => config('steam.key'),
-            'vanityurl' => $vanityName,
-        ]);
+                'key' => $this->apiKey,
+                'vanityurl' => $vanityName,
+            ]);
 
         if ($response->successful() && $response->json('response.success') === 1) {
             return $response->json('response.steamid');
@@ -71,64 +82,69 @@ class SteamAPIService
     /**
      * Get the total number of games owned by the user.
      *
+     * @param string $steamid The numeric Steam ID
      * @return int
      */
-    public function getGameAmount()
+    public function getGameAmount(string $steamid): int
     {
-        $data = $this->fetchOwnedGames();
-
-        Log::info('Owned games data', ['data' => $data]);
-
-        if (is_array($data)) return $data['game_count'] ?? 0;
-
-        return 0;
+        $data = $this->fetchOwnedGamesData($steamid);
+        return $data['game_count'] ?? 0;
     }
 
     /**
      * Get an array of owned game IDs.
      *
-     * @return array
+     * @param string $steamid The numeric Steam ID
+     * @return array<int>
      */
-    public function getGameIDs()
+    public function getGameIDs(string $steamid): array
     {
-        $data = $this->fetchOwnedGames();
-
-        Log::info('Owned games data', ['data' => $data]);
-
+        $data = $this->fetchOwnedGamesData($steamid);
         $games = $data['games'] ?? [];
-        return array_map(fn($game) => $game['appid'], $games);
+        
+        return array_column($games, 'appid');
     }
 
     /**
-     * Fetch owned games from the Steam API.
+     * Fetch owned games data from Steam API.
      *
-     * @return array|null The `response` array from Steam on success, or null on failure
+     * @param string $steamid The numeric Steam ID
+     * @return array The `response` array from Steam on success, or an empty array on failure
      */
-    private function fetchOwnedGames()
+    private function fetchOwnedGamesData(string $steamid): array
     {
-        $steamid = session()->get('userSteamID');
-
         if (empty($steamid)) {
-            return null;
+            Log::warning('Empty Steam ID provided to fetchOwnedGamesData');
+            return [];
         }
 
         $params = [
-            'key' => config('steam.key'),
+            'key' => $this->apiKey,
             'steamid' => $steamid,
             'include_appinfo' => false,
             'include_played_free_games' => true,
         ];
 
         try {
-            $response = Http::get($this->ownedGamesEndpoint, $params);
+            $response = Http::timeout(10)
+                ->retry(2, 100)
+                ->get($this->ownedGamesEndpoint, $params);
 
             if ($response->successful()) {
                 return $response->json('response') ?? [];
             }
+            
+            Log::warning('Steam API error when fetching owned games', [
+                'status' => $response->status(),
+                'steamid' => $steamid
+            ]);
         } catch (\Throwable $e) {
-            Log::warning('fetchOwnedGames failed: ' . $e->getMessage());
+            Log::error('fetchOwnedGames exception', [
+                'error' => $e->getMessage(),
+                'steamid' => $steamid
+            ]);
         }
 
-        return null;
+        return [];
     }
 }

@@ -47,8 +47,8 @@ class SteamAPIController extends Controller
                                 'profileURL' => $player['avatarfull'] ?? null,
                                 'username' => $player['personaname'] ?? null,
                                 'timeCreated' => $player['timecreated'] ?? null,
-                                'totalGamesOwned' => $steam->getGameAmount(),
-                                'gameIDs' => $steam->getGameIDs(),
+                                'totalGamesOwned' => $steam->getGameAmount($userSteamID),
+                                'gameIDs' => $steam->getGameIDs($userSteamID),
                             ]);
                         } catch (\Throwable $exception) {
                             Log::error('Failed to write session data', [
@@ -66,7 +66,7 @@ class SteamAPIController extends Controller
             ]);
         } catch (\Throwable $e) {
             // ERROR: Log and return 500
-            Log::error('validateUser error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            Log::error('validateUser error: ' . $e->getMessage());
             return response()->json([
                 'userSteamID' => null,
                 'isPublicProfile' => false

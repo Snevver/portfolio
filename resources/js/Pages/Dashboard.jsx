@@ -8,7 +8,7 @@ export default function Dashboard() {
     
     useEffect(() => {
         console.log('Steam data:', steam);
-    }, []);
+    }, [steam]);
 
     return (
         <Layout>
