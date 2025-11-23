@@ -46,8 +46,8 @@ class SteamAPIController extends Controller
                     if ($userSteamID !== null && $isAvailable) {
                         try {
                             $request->session()->put('userSteamID', $userSteamID);
-                        } catch (\Throwable $_) {
-                            Log::error('Failed to write session key', ['exception' => $_ instanceof \Throwable ? $_->getMessage() : (string)$_]);
+                        } catch (\Throwable $exception) {
+                            Log::error('Failed to write session key', ['exception' => $exception->getMessage()]);
                         }
                     }
                 }
