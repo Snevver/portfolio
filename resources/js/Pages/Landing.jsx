@@ -123,7 +123,7 @@ export default function Landing() {
 
             // Check if the user exists
             if (validationResponse.userSteamID) {
-                if (validationResponse.isAvailable) {
+                if (validationResponse.isPublicProfile) {
                     // Redirect to dashboard
                     // The user's Steam ID is saved to the session in the backend
                     router.visit("/dashboard");

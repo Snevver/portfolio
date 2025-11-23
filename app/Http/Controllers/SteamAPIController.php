@@ -26,10 +26,6 @@ class SteamAPIController extends Controller
             'isCustomID' => 'required|boolean'
         ]);
 
-        // Initialize return vars
-        $userSteamID = null;
-        $isAvailable = false;
-
         // Fetch player summary from Steam API
         try {
             $response = $steam->fetchPlayerSummary($request->userSteamID, $request->isCustomID);
@@ -40,14 +36,24 @@ class SteamAPIController extends Controller
 
                 if ($player) {
                     $userSteamID = $player['steamid'] ?? null;
-                    $isAvailable = ($player['communityvisibilitystate'] ?? null) === 3 && $userSteamID !== null;
+                    $isPublicProfile = ($player['communityvisibilitystate'] ?? 0) === 3;
 
-                    // Store userSteamID in server session when the profile exists and is available (public)
-                    if ($userSteamID !== null && $isAvailable) {
+                    if ($userSteamID && $isPublicProfile) {
                         try {
-                            $request->session()->put('userSteamID', $userSteamID);
+                            // Store basic data in session
+                            $request->session()->put([
+                                'userSteamID' => $userSteamID,
+                                'publicProfile' => $isPublicProfile,
+                                'profileURL' => $player['avatarfull'] ?? null,
+                                'username' => $player['personaname'] ?? null,
+                                'timeCreated' => $player['timecreated'] ?? null,
+                                'totalGamesOwned' => $steam->getGameAmount(),
+                                'gameIDs' => $steam->getGameIDs(),
+                            ]);
                         } catch (\Throwable $exception) {
-                            Log::error('Failed to write session key', ['exception' => $exception->getMessage()]);
+                            Log::error('Failed to write session data', [
+                                'exception' => $exception->getMessage()
+                            ]);
                         }
                     }
                 }
@@ -56,14 +62,14 @@ class SteamAPIController extends Controller
             // Return the standard JSON shape
             return response()->json([
                 'userSteamID' => $userSteamID,
-                'isAvailable' => $isAvailable,
+                'isPublicProfile' => $isPublicProfile,
             ]);
         } catch (\Throwable $e) {
             // ERROR: Log and return 500
             Log::error('validateUser error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return response()->json([
                 'userSteamID' => null,
-                'isAvailable' => false
+                'isPublicProfile' => false
             ], 500);
         }
     }
