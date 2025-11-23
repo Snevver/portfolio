@@ -10,6 +10,13 @@ This document outlines the routes of the application. It can be used to easily f
  	- **Response:** HTML page rendered via Inertia. The frontend component is `resources/js/Pages/Landing.jsx` and handles the Steam ID submission flow.
  	- **Notes:** This is an entry point for unauthenticated users; it does not return JSON.
 
+---
+- **GET /dashboard**
+	- **Purpose:** Render the dashboard for users who have been validated via Steam. This route requires a server-side session key `userSteamID` and is protected by the `steam.auth` middleware.
+	- **Parameters:** None (standard GET)
+	- **Response:** HTML page rendered via Inertia. The frontend component is `resources/js/Pages/Dashboard.jsx` (or `Dashboard.jsx`) and expects the server session to contain `userSteamID`.
+
+---
 - **POST /validate-user**
 	- **Purpose:** Validate whether a Steam user exists for a provided Steam profile input.
 	- **Request (JSON body):**

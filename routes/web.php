@@ -8,8 +8,11 @@ Route::get('/', function () {
     return Inertia::render('Landing');
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+// Group protected routes that require a SteamID in the session
+Route::middleware('steam.auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    });
 });
 
 // Route to validate if a user exists
