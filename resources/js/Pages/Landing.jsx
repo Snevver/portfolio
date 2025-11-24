@@ -107,7 +107,7 @@ export default function Landing() {
 
         try {
             // Send POST request to the API route to check if the User Steam ID is valid
-            const rawResponse = await fetch("/validate-user", {
+            const rawResponse = await fetch("/initiate-user", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

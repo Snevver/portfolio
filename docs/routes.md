@@ -17,7 +17,7 @@ This document outlines the routes of the application. It can be used to easily f
 	- **Response:** HTML page rendered via Inertia. The frontend component is `resources/js/Pages/Dashboard.jsx` (or `Dashboard.jsx`) and expects the server session to contain `userSteamID`.
 
 ---
-- **POST /validate-user**
+- **POST /initiate-user**
 	- **Purpose:** Validate whether a Steam user exists for a provided Steam profile input.
 	- **Request (JSON body):**
 		- `userSteamID` (required, string) — Steam profile URL, numeric SteamID, or vanity name
