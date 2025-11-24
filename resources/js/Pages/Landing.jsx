@@ -13,7 +13,7 @@ export default function Landing() {
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
     /**
-     * Validates if the input is a valid Steam ID or URL.
+     * Validates if the input is a valid Steam ID or URL and if so, returns a big amount of user data.
      * Accepts:
      * - Full Steam profile URL: https://steamcommunity.com/profiles/76561198000000000
      * - Full custom Steam URL: https://steamcommunity.com/id/customname
@@ -107,7 +107,7 @@ export default function Landing() {
 
         try {
             // Send POST request to the API route to check if the User Steam ID is valid
-            const rawResponse = await fetch("/validate-user", {
+            const rawResponse = await fetch("/initiate-user", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -123,12 +123,8 @@ export default function Landing() {
 
             // Check if the user exists
             if (validationResponse.userSteamID) {
-                if (validationResponse.isAvailable) {
-                    // Store ID locally and redirect to the dashboard
-                    sessionStorage.setItem(
-                        "userSteamID",
-                        validationResponse.userSteamID
-                    );
+                if (validationResponse.isPublicProfile) {
+                    // Redirect to dashboard
                     router.visit("/dashboard");
                 } else {
                     // Tell user to set profile to public

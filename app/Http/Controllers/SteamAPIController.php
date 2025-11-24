@@ -6,15 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\SteamAPIService;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Client\Response as HttpClientResponse;
-use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
 class SteamAPIController extends Controller
 {
     /**
      * Get the users basic info
      *
-     * Returns the numeric userID when found, or null when not found.
+     * Returns JSON with:
+     * - userSteamID (string|null)
+     * - isPublicProfile (bool)
      *
      * @param Request $request
      * @param SteamAPIService $steam
@@ -38,30 +38,46 @@ class SteamAPIController extends Controller
 
                 if ($player) {
                     $userSteamID = $player['steamid'] ?? null;
-                    $isAvailable = ($player['communityvisibilitystate'] ?? null) === 3 && $userSteamID !== null;
+                    $isPublicProfile = ($player['communityvisibilitystate'] ?? 0) === 3;
 
-                    return response()->json([
-                        'userSteamID' => $userSteamID,
-                        'isAvailable' => $isAvailable,
-                    ]);
+                    if ($userSteamID && $isPublicProfile) {
+                        try {
+                            $ownedStats = $steam->getOwnedGamesStats($userSteamID, 5);
+
+                            // Store basic data and stats in session
+                            $request->session()->put([
+                                'userSteamID' => $userSteamID,
+                                'publicProfile' => $isPublicProfile,
+                                'profileURL' => $player['avatarfull'] ?? null,
+                                'username' => $player['personaname'] ?? null,
+                                'timeCreated' => $steam->getAccountCreationDate($player['timecreated'] ?? null),
+                                'totalGamesOwned' => $ownedStats['game_count'] ?? 0,
+                                'totalPlaytimeMinutes' => $ownedStats['total_playtime_minutes'] ?? 0,
+                                'avgPlaytimeMinutes' => $ownedStats['avg_playtime_minutes'] ?? 0.0,
+                                'medianPlaytimeMinutes' => $ownedStats['median_playtime_minutes'] ?? 0.0,
+                                'topGames' => $ownedStats['top_games'] ?? [],
+                                'playedPercentage' => $ownedStats['played_percentage'] ?? 0.0,
+                            ]);
+                        } catch (\Throwable $exception) {
+                            Log::error('Failed to write session data', [
+                                'exception' => $exception->getMessage()
+                            ]);
+                        }
+                    }
                 }
-
-                return response()->json([
-                    'userSteamID' => null,
-                    'isAvailable' => false,
-                ]);
             }
 
+            // Return the standard JSON shape
             return response()->json([
-                'userSteamID' => null,
-                'isAvailable' => false
-            ], 502);
+                'userSteamID' => $userSteamID,
+                'isPublicProfile' => $isPublicProfile,
+            ]);
         } catch (\Throwable $e) {
             // ERROR: Log and return 500
-            Log::error('validateUser error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            Log::error('validateUser error: ' . $e->getMessage());
             return response()->json([
                 'userSteamID' => null,
-                'isAvailable' => false
+                'isPublicProfile' => false
             ], 500);
         }
     }
