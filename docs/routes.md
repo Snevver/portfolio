@@ -17,7 +17,7 @@ This document outlines the routes of the application. It can be used to easily f
 	- **Response:** HTML page rendered via Inertia. The frontend component is `resources/js/Pages/Dashboard.jsx` (or `Dashboard.jsx`) and expects the server session to contain `userSteamID`.
 
 ---
-- **POST /validate-user**
+- **POST /initiate-user**
 	- **Purpose:** Validate whether a Steam user exists for a provided Steam profile input.
 	- **Request (JSON body):**
 		- `userSteamID` (required, string) — Steam profile URL, numeric SteamID, or vanity name
@@ -25,13 +25,16 @@ This document outlines the routes of the application. It can be used to easily f
 	- **Validation:** Controller validates `userSteamID` (`required|string`) and `isCustomID` (`required|boolean`).
 	- **Behavior:** Controller delegates to `App\Services\SteamAPIService::fetchPlayerSummary()` (service resolves vanity names when needed). The controller returns a consistent JSON shape so the frontend always receives the same structure whether the user exists or not.
 	- **Response (JSON body):**
-		- `200 OK` — user found
-			- Body: `{ "userSteamID": "76561199...", "isAvailable": true }`
-		- `200 OK` — user not found
-			- Body: `{ "userSteamID": null, "isAvailable": false }`
-		- `502 / 500` — upstream error or internal error (body retains same shape)
-			- Body: `{ "userSteamID": null, "isAvailable": false }`
+		- `200 OK` — public user found
+			- Body: `{ "userSteamID": "76561199...", "isPublicProfile": true }`
+		- `200 OK` — user not found or profile not public
+			- Body: `{ "userSteamID": null, "isPublicProfile": false }`
+		- `500` — internal error (body retains same shape)
+			- Body: `{ "userSteamID": null, "isPublicProfile": false }`
 
 	Notes:
 	- `userSteamID` is returned as a string (not a numeric JSON value) to avoid integer precision loss in JavaScript. Treat it as a string in the frontend.
-	- If `isCustomID` is `true`, the service will attempt to resolve the vanity name; if resolution fails the controller treats the result as "not found" and returns `{ userSteamID: null, isAvailable: false }`.
+	- If `isCustomID` is `true`, the service will attempt to resolve the vanity name; if resolution fails the controller treats the result as "not found" and returns `{ "userSteamID": null, "isPublicProfile": false }`.
+	- When a public profile is found, the controller stores these values in session for subsequent requests and for shared Inertia props:
+		- `userSteamID`, `publicProfile`, `profileURL`, `username`, `timeCreated`, `totalGamesOwned`, `gameIDs`.
+	- The frontend can rely on the shared Inertia prop `steam` (see `app/Http/Middleware/HandleInertiaRequests.php`) to access `username`, `profileURL`, `totalGamesOwned`, and `gameIDs` without additional requests after validation.

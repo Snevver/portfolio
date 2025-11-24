@@ -34,6 +34,19 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'steam' => [
+                'steamID' => session('userSteamID'),
+                'publicProfile' => session('publicProfile'),
+                'profileURL' => session('profileURL'),
+                'username' => session('username'),
+                'timeCreated' => session('timeCreated'),
+                'totalGamesOwned' => session('totalGamesOwned'),
+                'totalPlaytimeMinutes' => session('totalPlaytimeMinutes'),
+                'avgPlaytimeMinutes' => session('avgPlaytimeMinutes'),
+                'medianPlaytimeMinutes' => session('medianPlaytimeMinutes'),
+                'topGames' => session('topGames'),
+                'playedPercentage' => session('playedPercentage'),
+            ],
         ];
     }
 }

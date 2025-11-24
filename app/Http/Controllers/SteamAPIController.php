@@ -12,7 +12,9 @@ class SteamAPIController extends Controller
     /**
      * Get the users basic info
      *
-     * Returns the numeric userID when found, or null when not found.
+     * Returns JSON with:
+     * - userSteamID (string|null)
+     * - isPublicProfile (bool)
      *
      * @param Request $request
      * @param SteamAPIService $steam
@@ -26,10 +28,6 @@ class SteamAPIController extends Controller
             'isCustomID' => 'required|boolean'
         ]);
 
-        // Initialize return vars
-        $userSteamID = null;
-        $isAvailable = false;
-
         // Fetch player summary from Steam API
         try {
             $response = $steam->fetchPlayerSummary($request->userSteamID, $request->isCustomID);
@@ -40,14 +38,30 @@ class SteamAPIController extends Controller
 
                 if ($player) {
                     $userSteamID = $player['steamid'] ?? null;
-                    $isAvailable = ($player['communityvisibilitystate'] ?? null) === 3 && $userSteamID !== null;
+                    $isPublicProfile = ($player['communityvisibilitystate'] ?? 0) === 3;
 
-                    // Store userSteamID in server session when the profile exists and is available (public)
-                    if ($userSteamID !== null && $isAvailable) {
+                    if ($userSteamID && $isPublicProfile) {
                         try {
-                            $request->session()->put('userSteamID', $userSteamID);
+                            $ownedStats = $steam->getOwnedGamesStats($userSteamID, 5);
+
+                            // Store basic data and stats in session
+                            $request->session()->put([
+                                'userSteamID' => $userSteamID,
+                                'publicProfile' => $isPublicProfile,
+                                'profileURL' => $player['avatarfull'] ?? null,
+                                'username' => $player['personaname'] ?? null,
+                                'timeCreated' => $steam->getAccountCreationDate($player['timecreated'] ?? null),
+                                'totalGamesOwned' => $ownedStats['game_count'] ?? 0,
+                                'totalPlaytimeMinutes' => $ownedStats['total_playtime_minutes'] ?? 0,
+                                'avgPlaytimeMinutes' => $ownedStats['avg_playtime_minutes'] ?? 0.0,
+                                'medianPlaytimeMinutes' => $ownedStats['median_playtime_minutes'] ?? 0.0,
+                                'topGames' => $ownedStats['top_games'] ?? [],
+                                'playedPercentage' => $ownedStats['played_percentage'] ?? 0.0,
+                            ]);
                         } catch (\Throwable $exception) {
-                            Log::error('Failed to write session key', ['exception' => $exception->getMessage()]);
+                            Log::error('Failed to write session data', [
+                                'exception' => $exception->getMessage()
+                            ]);
                         }
                     }
                 }
@@ -56,14 +70,14 @@ class SteamAPIController extends Controller
             // Return the standard JSON shape
             return response()->json([
                 'userSteamID' => $userSteamID,
-                'isAvailable' => $isAvailable,
+                'isPublicProfile' => $isPublicProfile,
             ]);
         } catch (\Throwable $e) {
             // ERROR: Log and return 500
-            Log::error('validateUser error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            Log::error('validateUser error: ' . $e->getMessage());
             return response()->json([
                 'userSteamID' => null,
-                'isAvailable' => false
+                'isPublicProfile' => false
             ], 500);
         }
     }

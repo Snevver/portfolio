@@ -16,7 +16,8 @@ Route::middleware('steam.auth')->group(function () {
 });
 
 // Route to validate if a user exists
-Route::post('/validate-user', [
+// and fetch basic user data from Steam API
+Route::post('/initiate-user', [
     SteamAPIController::class,
     'validateUser'
 ]);

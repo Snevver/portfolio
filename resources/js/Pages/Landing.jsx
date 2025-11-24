@@ -107,7 +107,7 @@ export default function Landing() {
 
         try {
             // Send POST request to the API route to check if the User Steam ID is valid
-            const rawResponse = await fetch("/validate-user", {
+            const rawResponse = await fetch("/initiate-user", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -123,7 +123,7 @@ export default function Landing() {
 
             // Check if the user exists
             if (validationResponse.userSteamID) {
-                if (validationResponse.isAvailable) {
+                if (validationResponse.isPublicProfile) {
                     // Redirect to dashboard
                     // The user's Steam ID is saved to the session in the backend
                     router.visit("/dashboard");
