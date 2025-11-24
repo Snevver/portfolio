@@ -12,7 +12,9 @@ class SteamAPIController extends Controller
     /**
      * Get the users basic info
      *
-     * Returns the numeric userID when found, or null when not found.
+     * Returns JSON with:
+     * - userSteamID (string|null)
+     * - isPublicProfile (bool)
      *
      * @param Request $request
      * @param SteamAPIService $steam
@@ -40,15 +42,21 @@ class SteamAPIController extends Controller
 
                     if ($userSteamID && $isPublicProfile) {
                         try {
-                            // Store basic data in session
+                            $ownedStats = $steam->getOwnedGamesStats($userSteamID, 5);
+
+                            // Store basic data and stats in session
                             $request->session()->put([
                                 'userSteamID' => $userSteamID,
                                 'publicProfile' => $isPublicProfile,
                                 'profileURL' => $player['avatarfull'] ?? null,
                                 'username' => $player['personaname'] ?? null,
-                                'timeCreated' => $player['timecreated'] ?? null,
-                                'totalGamesOwned' => $steam->getGameAmount($userSteamID),
-                                'gameIDs' => $steam->getGameIDs($userSteamID),
+                                'timeCreated' => $steam->getAccountCreationDate($player['timecreated'] ?? null),
+                                'totalGamesOwned' => $ownedStats['game_count'] ?? 0,
+                                'totalPlaytimeMinutes' => $ownedStats['total_playtime_minutes'] ?? 0,
+                                'avgPlaytimeMinutes' => $ownedStats['avg_playtime_minutes'] ?? 0.0,
+                                'medianPlaytimeMinutes' => $ownedStats['median_playtime_minutes'] ?? 0.0,
+                                'topGames' => $ownedStats['top_games'] ?? [],
+                                'playedPercentage' => $ownedStats['played_percentage'] ?? 0.0,
                             ]);
                         } catch (\Throwable $exception) {
                             Log::error('Failed to write session data', [

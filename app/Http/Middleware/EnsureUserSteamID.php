@@ -19,7 +19,7 @@ class EnsureUserSteamID
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! $request->session()->has('userSteamID')) {
+        if (!$request->session()->has('userSteamID')) {
             return redirect('/');
         }
 
