@@ -13,7 +13,7 @@ export default function Landing() {
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
     /**
-     * Validates if the input is a valid Steam ID or URL.
+     * Validates if the input is a valid Steam ID or URL and if so, returns a big amount of user data.
      * Accepts:
      * - Full Steam profile URL: https://steamcommunity.com/profiles/76561198000000000
      * - Full custom Steam URL: https://steamcommunity.com/id/customname
@@ -125,7 +125,6 @@ export default function Landing() {
             if (validationResponse.userSteamID) {
                 if (validationResponse.isPublicProfile) {
                     // Redirect to dashboard
-                    // The user's Steam ID is saved to the session in the backend
                     router.visit("/dashboard");
                 } else {
                     // Tell user to set profile to public
