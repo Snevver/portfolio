@@ -30,7 +30,7 @@
     }
 
     .animate-swipe-out {
-        animation: swipe-out 0.3s ease-in-out forwards;
+        animation: swipe-out 0.3s ease-out forwards;
     }
 
     @keyframes swipe-in {
@@ -45,7 +45,7 @@
     }
 
     .animate-swipe-in {
-        animation: swipe-in 0.3s ease-in;
+        animation: swipe-in 0.3s ease-out;
     }
 
     @keyframes title-gradient {
