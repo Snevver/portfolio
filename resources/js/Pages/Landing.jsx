@@ -11,7 +11,7 @@ export default function Landing() {
     const [error, setError] = useState(null);
     const [isValidInput, setIsValidInput] = useState(null);
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
-
+    const [swipeOut, setSwipeOut] = useState(false);
     /**
      * Validates if the input is a valid Steam ID or URL and if so, returns a big amount of user data.
      * Accepts:
@@ -125,7 +125,12 @@ export default function Landing() {
             if (validationResponse.userSteamID) {
                 if (validationResponse.isPublicProfile) {
                     // Redirect to dashboard
-                    router.visit("/dashboard");
+                    setSwipeOut(true);
+
+                    // Wait .3 seconds for the animation to complete
+                    setTimeout(() => {
+                        router.visit("/dashboard");
+                    }, 300);
                 } else {
                     // Tell user to set profile to public
                     console.log("Error: Profile not public");
@@ -145,13 +150,14 @@ export default function Landing() {
     }
 
     return (
-        <Layout playFadeIn={true}>
+        <Layout isLandingPage={true} swipeOut={swipeOut}>
             {/* User Steam ID Input */}
             <Card className="space-y-6 animate-fade-in w-full max-w-2xl">
                 <div className="text-center space-y-2">
                     <h3 className="text-2xl font-semibold text-white">
                         Enter Your Steam Profile
                     </h3>
+
                     <p className="text-gray-400 text-sm">
                         Paste your Steam profile URL, Steam ID, or custom ID to
                         get started.{" "}
