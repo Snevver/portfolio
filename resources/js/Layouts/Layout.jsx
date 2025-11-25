@@ -7,7 +7,7 @@ export default function Layout({
 }) {
     return (
         <div
-            className={`min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100`}
+            className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 overflow-x-hidden"
         >
             {/* Background decoration */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -15,15 +15,7 @@ export default function Layout({
                 <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
             </div>
 
-            <div
-                className={`flex flex-col justify-between min-h-screen relative z-10 ${
-                    swipeOut
-                        ? "animate-swipe-out"
-                        : isLandingPage
-                        ? ""
-                        : "animate-swipe-in"
-                }`}
-            >
+            <div className="flex flex-col justify-between min-h-screen relative z-10">
                 {/* Header */}
                 <header
                     className={`text-center pt-32 sm:pt-16 pb-8 px-4 ${
@@ -39,7 +31,15 @@ export default function Layout({
                 </header>
 
                 {/* Main Content */}
-                <main className="flex items-center justify-center px-4 py-8">
+                <main
+                    className={`flex items-center justify-center w-full px-4 py-8 ${
+                        swipeOut
+                            ? "animate-swipe-out"
+                            : isLandingPage
+                            ? ""
+                            : "animate-swipe-in"
+                    }`}
+                >
                     {children}
                 </main>
 

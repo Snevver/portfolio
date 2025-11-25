@@ -9,7 +9,7 @@ export default function Dashboard() {
 
     return (
         <Layout swipeOut={swipeOut}>
-            <Card className="w-full max-w-2xl"></Card>
+            <Card className="w-xl"></Card>
         </Layout>
     );
 }

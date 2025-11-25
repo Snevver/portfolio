@@ -25,7 +25,7 @@
         }
         to {
             opacity: 0;
-            transform: translateX(-25%);
+            transform: translateX(-100px);
         }
     }
 
@@ -36,7 +36,7 @@
     @keyframes swipe-in {
         from {
             opacity: 0;
-            transform: translateX(25%);
+            transform: translateX(100px);
         }
         to {
             opacity: 1;
