@@ -1,9 +1,13 @@
 import React from "react";
 
-export default function Layout({ children, playFadeIn = false }) {
+export default function Layout({
+    children,
+    isLandingPage = false,
+    swipeOut = false,
+}) {
     return (
         <div
-            className={`min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100`}
+            className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 overflow-x-hidden"
         >
             {/* Background decoration */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -14,7 +18,9 @@ export default function Layout({ children, playFadeIn = false }) {
             <div className="flex flex-col justify-between min-h-screen relative z-10">
                 {/* Header */}
                 <header
-                    className={`text-center pt-32 sm:pt-16 pb-8 px-4`}
+                    className={`text-center pt-32 sm:pt-16 pb-8 px-4 ${
+                        isLandingPage ? "animate-fade-in" : ""
+                    }`}
                 >
                     <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent animate-title-gradient">
                         SteamGuessr
@@ -25,7 +31,15 @@ export default function Layout({ children, playFadeIn = false }) {
                 </header>
 
                 {/* Main Content */}
-                <main className="flex items-center justify-center px-4 py-8">
+                <main
+                    className={`flex items-center justify-center w-full px-4 py-8 ${
+                        swipeOut
+                            ? "animate-swipe-out"
+                            : isLandingPage
+                            ? ""
+                            : "animate-swipe-in"
+                    }`}
+                >
                     {children}
                 </main>
 
