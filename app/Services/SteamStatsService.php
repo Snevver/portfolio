@@ -50,12 +50,26 @@ class SteamStatsService
 
     /**
      * Normalize a Steam account creation timestamp into a structured payload.
+     * Accepts either an integer unix timestamp, or an array (e.g. player payload)
+     * containing a `timecreated` / `timeCreated` key. Returns structured info
+     * including an `age` object (years/months/days) and a human-readable age.
      *
-     * @param int|array|null $timestamp Unix timestamp or an array containing ['timeCreated']
-     * @return array{timestamp:?int, iso8601:?string, human:?string}
+     * @param int|array|null $timestamp Unix timestamp, player array, or null
+     * @return array{timestamp:?int, iso8601:?string, human:?string, age:array|null, age_human:?string}
      */
     public function getAccountCreationDate($timestamp): array
     {
+        // If an array of player data was passed, try to extract the timestamp.
+        if (is_array($timestamp)) {
+            if (isset($timestamp['timecreated'])) {
+                $timestamp = $timestamp['timecreated'];
+            } elseif (isset($timestamp['timeCreated'])) {
+                $timestamp = $timestamp['timeCreated'];
+            } else {
+                $timestamp = null;
+            }
+        }
+
         if (empty($timestamp) || $timestamp <= 0) {
             return [
                 'timestamp' => null,

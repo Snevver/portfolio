@@ -9,6 +9,15 @@ use App\Services\SteamIdentityService;
 use App\Services\SteamStatsService;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Steam API controller.
+ *
+ * Response code constants defined on the class indicate the possible outcomes
+ * of the `validateUser` endpoint:
+ * - 1: Invalid user (user not found / steamid resolution failed)
+ * - 2: Valid user but private profile
+ * - 3: Valid user with public profile
+ */
 class SteamAPIController extends Controller
 {
     // Response codes
@@ -47,23 +56,30 @@ class SteamAPIController extends Controller
         try {
             // Resolve and/or store SteamID in session
             $userSteamID = $identity->storeSessionSteamId($request->userSteamID, $request->isCustomID);
+
+            // If resolution failed, return invalid immediately and avoid calling Steam with null
+            if (empty($userSteamID)) {
+                return response()->json(self::RESPONSE_INVALID);
+            }
+
             $response = $client->fetchPlayerSummary($userSteamID);
 
             if ($response->successful()) {
                 $json = $response->json();
                 $player = $json['response']['players'][0] ?? null;
-                $publicCommunityVisabilityState = 3;
+                $publicCommunityVisibilityState = 3;
 
                 if ($player) {
-                    $isPublicProfile = ($player['communityvisibilitystate'] ?? 0) === $publicCommunityVisabilityState;
+                    $isPublicProfile = ($player['communityvisibilitystate'] ?? 0) === $publicCommunityVisibilityState;
 
                     if ($userSteamID && $isPublicProfile) {
                         try {
                             // Compute stats via the dedicated service
                             $ownedStats = $stats->getOwnedGamesStats($userSteamID, 5);
 
-                            // Store basic data and stats in session. game IDs and account age provided by the stats service.
-                            $timeCreated = $stats->getAccountCreationDate($player['timecreated'] ?? null);
+                            // Store game stats and account creation date in session. account creation is derived
+                            // from the player payload and normalized by the stats service.
+                            $timeCreated = $stats->getAccountCreationDate($player);
 
                             $request->session()->put([
                                 'userSteamID' => $userSteamID,
