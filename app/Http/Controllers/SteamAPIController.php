@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Services\SteamAPIClient;
 use App\Services\SteamIdentityService;
 use App\Services\SteamStatsService;
+use App\Services\UserSessionService;
+use App\Services\ValidationResponse;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -36,7 +38,7 @@ class SteamAPIController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function validateUser(Request $request, SteamIdentityService $identity, SteamAPIClient $client, SteamStatsService $stats)
+    public function validateUser(Request $request, SteamIdentityService $identity, SteamAPIClient $client, SteamStatsService $stats, UserSessionService $userSession)
     {
         // Validate the request
         $request->validate([
@@ -44,13 +46,8 @@ class SteamAPIController extends Controller
             'isCustomID' => 'required|boolean'
         ]);
 
-        // Remove all session keys except a small preserve list (keeps `_token` so we avoid 419s).
-        $allKeys = array_keys($request->session()->all());
-        $preserve = ['_token'];
-        $keysToForget = array_diff($allKeys, $preserve);
-        if (!empty($keysToForget)) {
-            $request->session()->forget($keysToForget);
-        }
+        // Clear session keys except a small preserve list (keeps `_token` so we avoid 419s).
+        $userSession->clearExceptPreserve();
 
         // Fetch player summary from Steam API
         try {
@@ -74,27 +71,11 @@ class SteamAPIController extends Controller
 
                     if ($userSteamID && $isPublicProfile) {
                         try {
-                            // Compute stats via the dedicated service
                             $ownedStats = $stats->getOwnedGamesStats($userSteamID, 5);
-
-                            // Store game stats and account creation date in session. account creation is derived
-                            // from the player payload and normalized by the stats service.
                             $timeCreated = $stats->getAccountCreationDate($player);
 
-                            $request->session()->put([
-                                'userSteamID' => $userSteamID,
-                                'publicProfile' => $isPublicProfile,
-                                'profileURL' => $player['avatarfull'] ?? null,
-                                'username' => $player['personaname'] ?? null,
-                                'timeCreated' => $timeCreated,
-                                'totalGamesOwned' => $ownedStats['game_count'] ?? 0,
-                                'gameIDsOwned' => $ownedStats['game_ids'] ?? [],
-                                'totalPlaytimeMinutes' => $ownedStats['total_playtime_minutes'] ?? 0,
-                                'avgPlaytimeMinutes' => $ownedStats['avg_playtime_minutes'] ?? 0.0,
-                                'medianPlaytimeMinutes' => $ownedStats['median_playtime_minutes'] ?? 0.0,
-                                'topGames' => $ownedStats['top_games'] ?? [],
-                                'playedPercentage' => $ownedStats['played_percentage'] ?? 0.0,
-                            ]);
+                            // Put all relevant user data into the session
+                            $userSession->storeUserSession($userSteamID, $player, $ownedStats, $timeCreated);
                         } catch (\Throwable $exception) {
                             Log::error('Failed to write session data', [
                                 'exception' => $exception->getMessage(),
@@ -104,30 +85,10 @@ class SteamAPIController extends Controller
                 }
             }
 
-            return response()->json($this->getResponseCode($userSteamID, $isPublicProfile));
+            return response()->json(ValidationResponse::determine($userSteamID, $isPublicProfile));
         } catch (\Throwable $e) {
             Log::error('validateUser error: ' . $e->getMessage());
             return response()->json(1);
         }
-    }
-
-    /**
-     * Determine the response code based on player data and profile visibility.
-     *
-     * @param string|null $userSteamID Numeric SteamID
-     * @param bool $isPublicProfile Whether the profile is public
-     * @return int Response code (1: invalid, 2: private, 3: public)
-     */
-    private function getResponseCode(?string $userSteamID = null, ?bool $isPublicProfile = false): int
-    {
-        if (!$userSteamID) {
-            return self::RESPONSE_INVALID;
-        }
-
-        if (!$isPublicProfile) {
-            return self::RESPONSE_PRIVATE;
-        }
-
-        return self::RESPONSE_PUBLIC;
     }
 }
