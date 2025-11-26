@@ -137,9 +137,11 @@ Title: `<type>/<short description>`
 
 [A summary of the changes, and anything that the reviewer should know about the changes.]
 
-## Type of change
+## List of changes
 
-Delete the options that are not relevant, and delete this line too.
+* [Change 1, etc..]
+
+## Type of change
 
 -   Bug fix(es) (non-breaking change which fixes an issue)
 -   New feature(s) (non-breaking change which adds functionality)
