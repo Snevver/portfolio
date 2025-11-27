@@ -14,7 +14,7 @@ class GameStatsCalculator
     public function computeAll(array $games, int $topN = 5): array
     {
         $total = $this->getGameCount($games);
-        $ownedGameIDs = $this->getGameIDs($games);
+        $ownedGameIDs = $this->getGameIds($games);
         $totalPlaytime = $this->getTotalPlaytimeMinutes($games);
         $avg = $this->getAvgPlaytimeMinutes($games);
         $median = $this->getMedianPlaytimeMinutes($games);
@@ -49,7 +49,7 @@ class GameStatsCalculator
      * @param array $games
      * @return int[]
      */
-    public function getGameIDs(array $games): array
+    public function getGameIds(array $games): array
     {
         $ids = [];
         foreach ($games as $game) {

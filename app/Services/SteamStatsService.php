@@ -43,9 +43,7 @@ class SteamStatsService
         $games = $data['games'] ?? [];
 
         // Use the calculator service to compute individual stats
-        $result = $this->calculator->computeAll($games, $topN);
-
-        return $result;
+        return $this->calculator->computeAll($games, $topN);
     }
 
     /**

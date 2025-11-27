@@ -34,7 +34,8 @@ class HandleInertiaRequests extends Middleware
             'steam' => [
                 'steamID' => session('userSteamID'),
                 'publicProfile' => session('publicProfile'),
-                'profileURL' => session('profileURL'),
+                'steamProfileURL' => session('steamProfileURL'),
+                'profilePictureURL' => session('profilePictureURL'),
                 'username' => session('username'),
                 'timeCreated' => session('timeCreated'),
                 'accountAge' => session('accountAge'),

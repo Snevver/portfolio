@@ -27,7 +27,8 @@ class UserSessionService
         $this->session->put([
             'userSteamID' => $steamId,
             'publicProfile' => ($player['communityvisibilitystate'] ?? 0) === 3,
-            'profileURL' => $player['avatarfull'] ?? null,
+            'steamProfileURL' => $player['profileurl'] ?? null,
+            'profilePictureURL' => $player['avatarfull'] ?? null,
             'username' => $player['personaname'] ?? null,
             'timeCreated' => $timeCreated['human'] ?? null,
             'accountAge' => $timeCreated['age'] ?? null,
@@ -44,9 +45,6 @@ class UserSessionService
     /**
      * Clear all session keys except a small preserve list.
      * Keeps `_token` by default to avoid 419 CSRF errors.
-     *
-     * @param array $preserve
-     * @return void
      */
     public function clearExceptPreserve(): void
     {

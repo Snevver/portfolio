@@ -24,8 +24,7 @@ class SteamAPIController extends Controller
 {
     // Response codes
     private const RESPONSE_INVALID = 1;
-    private const RESPONSE_PRIVATE = 2;
-    private const RESPONSE_PUBLIC  = 3;
+    private const STEAM_PUBLIC_VISIBILITY = 3;
 
     /**
      * Get the users basic info and saves it to the session.
@@ -51,8 +50,12 @@ class SteamAPIController extends Controller
 
         // Fetch player summary from Steam API
         try {
-            // Resolve and/or store SteamID in session
-            $userSteamID = $identity->storeSessionSteamId($request->userSteamID, $request->isCustomID);
+            // Init variables to dodge undefined variable errors
+            $isPublicProfile = false;
+            $player = null;
+
+            // Get numeric SteamID
+            $userSteamID = $identity->sanitizeInput($request->userSteamID, $request->isCustomID);
 
             // If resolution failed, return invalid immediately and avoid calling Steam with null
             if (empty($userSteamID)) {
@@ -64,10 +67,9 @@ class SteamAPIController extends Controller
             if ($response->successful()) {
                 $json = $response->json();
                 $player = $json['response']['players'][0] ?? null;
-                $publicCommunityVisibilityState = 3;
 
                 if ($player) {
-                    $isPublicProfile = ($player['communityvisibilitystate'] ?? 0) === $publicCommunityVisibilityState;
+                    $isPublicProfile = ($player['communityvisibilitystate'] ?? 0) === self::STEAM_PUBLIC_VISIBILITY;
 
                     if ($userSteamID && $isPublicProfile) {
                         try {
@@ -88,7 +90,7 @@ class SteamAPIController extends Controller
             return response()->json(ValidationResponse::determine($userSteamID, $isPublicProfile));
         } catch (\Throwable $e) {
             Log::error('validateUser error: ' . $e->getMessage());
-            return response()->json(1);
+            return response()->json(ValidationResponse::INVALID);
         }
     }
 }
