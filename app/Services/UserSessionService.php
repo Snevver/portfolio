@@ -29,7 +29,7 @@ class UserSessionService
             'publicProfile' => ($player['communityvisibilitystate'] ?? 0) === 3,
             'profileURL' => $player['avatarfull'] ?? null,
             'username' => $player['personaname'] ?? null,
-            'timeCreated' => $timeCreated,
+            'timeCreated' => $timeCreated['human'] ?? null,
             'accountAge' => $timeCreated['age'] ?? null,
             'totalGamesOwned' => $ownedStats['game_count'] ?? 0,
             'gameIDsOwned' => $ownedStats['game_ids'] ?? [],
@@ -48,10 +48,20 @@ class UserSessionService
      * @param array $preserve
      * @return void
      */
-    public function clearExceptPreserve(array $preserve = ['_token']): void
+    public function clearExceptPreserve(): void
     {
+        // Define keys to preserve
+        $preserve = [
+            '_token',
+        ];
+
+        // Get all session keys
         $allKeys = array_keys($this->session->all());
+
+        // Define what keys to forget (all keys minus the preserve list)
         $keysToForget = array_diff($allKeys, $preserve);
+
+        // forget the filtered keys
         if (!empty($keysToForget)) {
             $this->session->forget($keysToForget);
         }

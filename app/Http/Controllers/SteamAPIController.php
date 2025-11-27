@@ -72,7 +72,7 @@ class SteamAPIController extends Controller
                     if ($userSteamID && $isPublicProfile) {
                         try {
                             $ownedStats = $stats->getOwnedGamesStats($userSteamID, 5);
-                            $timeCreated = $stats->getAccountCreationDate($player);
+                            $timeCreated = $stats->getAccountCreationDate($player['timecreated'] ?? null);
 
                             // Put all relevant user data into the session
                             $userSession->storeUserSession($userSteamID, $player, $ownedStats, $timeCreated);

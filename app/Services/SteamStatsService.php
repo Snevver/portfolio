@@ -50,34 +50,20 @@ class SteamStatsService
 
     /**
      * Normalize a Steam account creation timestamp into a structured payload.
-     * Accepts either an integer unix timestamp, or an array (e.g. player payload)
-     * containing a `timecreated` / `timeCreated` key. Returns structured info
-     * including an `age` object (years/months/days) and a human-readable age.
+     * Accepts an integer unix timestamp.
+     * Returns the human-readable date of creation and an account age breakdown.
      *
-     * @param int|array|null $timestamp Unix timestamp, player array, or null
-     * @return array{timestamp:?int, iso8601:?string, human:?string, age:array|null, age_human:?string}
+     * @param int|null $timestamp Unix timestamp or null
+     * @return array{human:?string, age:array|null}
      */
     public function getAccountCreationDate($timestamp): array
     {
-        // If an array of player data was passed, try to extract the timestamp.
-        if (is_array($timestamp)) {
-            if (isset($timestamp['timecreated'])) {
-                $timestamp = $timestamp['timecreated'];
-            } elseif (isset($timestamp['timeCreated'])) {
-                $timestamp = $timestamp['timeCreated'];
-            } else {
-                $timestamp = null;
-            }
-        }
-
         if (empty($timestamp) || $timestamp <= 0) {
             return [
-                'timestamp' => null,
-                'iso8601' => null,
                 'human' => null,
+                'age' => null,
             ];
         }
-
 
         $dt = Carbon::createFromTimestampUTC($timestamp);
 
@@ -92,8 +78,6 @@ class SteamStatsService
         ];
 
         return [
-            'timestamp' => $timestamp,
-            'iso8601' => $dt->toIso8601String(),
             'human' => $dt->toDayDateTimeString(),
             'age' => $age,
         ];

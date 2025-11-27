@@ -52,9 +52,9 @@ class GameStatsCalculator
     public function getGameIDs(array $games): array
     {
         $ids = [];
-        foreach ($games as $g) {
-            if (isset($g['appid'])) {
-                $ids[] = (int) $g['appid'];
+        foreach ($games as $game) {
+            if (isset($game['appid'])) {
+                $ids[] = (int) $game['appid'];
             }
         }
 
