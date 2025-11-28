@@ -19,25 +19,16 @@ export default function Dashboard() {
     };
 
     // Color the persona state badge
-    let personaStateColor;
+    const personaStateClasses = {
+        Offline: "bg-gray-500/10 text-gray-300 border-gray-500/30",
+        Online: "bg-green-500/10 text-green-300 border-green-500/30",
+        Busy: "bg-red-500/10 text-red-300 border-red-500/30",
+        Away: "bg-yellow-500/10 text-yellow-300 border-yellow-500/30",
+    };
 
-    switch (steam.personaState) {
-        case "Offline":
-            personaStateColor = "gray";
-            break;
-        case "Online":
-            personaStateColor = "green";
-            break;
-        case "Busy":
-            personaStateColor = "red";
-            break;
-        case "Away":
-            personaStateColor = "yellow";
-            break;
-        default:
-            personaStateColor = "blue";
-            break;
-    }
+    const personaStateBadgeClass =
+        personaStateClasses[steam.personaState] ||
+        "bg-blue-500/10 text-blue-300 border-blue-500/30";
 
     // Convert the total and average playtime to hours if needed
     let totalPlaytime;
@@ -81,7 +72,7 @@ export default function Dashboard() {
 
                         <div className="flex justify-center sm:justify-start flex-wrap gap-2 mt-2">
                             <span
-                                className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-${personaStateColor}-500/10 text-${personaStateColor}-300 border border-${personaStateColor}-500/30`}
+                                className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${personaStateBadgeClass}`}
                             >
                                 {steam.personaState}
                             </span>
@@ -95,7 +86,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Stats grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
                     <Card className="p-5 bg-gray-900/50 border-gray-700/70">
                         <p className="text-xs uppercase tracking-wide text-gray-400">
                             Total games

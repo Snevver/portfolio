@@ -32,7 +32,7 @@ export default function Layout({
 
                 {/* Main Content */}
                 <main
-                    className={`flex items-center justify-center w-full px-4 py-8 ${
+                    className={`flex flex-col items-center justify-center w-full px-4 py-8 ${
                         swipeOut
                             ? "animate-swipe-out"
                             : isLandingPage
