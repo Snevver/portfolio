@@ -32,7 +32,6 @@ class SteamStatsService
      *   game_ids:int[],
      *   total_playtime_minutes:int,
      *   average_playtime_minutes:float,
-     *   median_playtime_minutes:float,
      *   top_games:array,
      *   played_percentage:float
      * }
@@ -49,35 +48,62 @@ class SteamStatsService
     /**
      * Normalize a Steam account creation timestamp into a structured payload.
      * Accepts an integer unix timestamp.
-     * Returns the human-readable date of creation and an account age breakdown.
+     * Returns the structured date of creation and an account age breakdown.
      *
      * @param int|null $timestamp Unix timestamp or null
-     * @return array{human:?string, age:array|null}
+     * @return array{date:array|null, age:array|null}
      */
-    public function getAccountCreationDate($timestamp): array
+    public function getAccountAgeAndCreationDate($timestamp): array
+    {
+        return [
+            'date' => $this->getCreationDate($timestamp),
+            'age' => $this->getAccountAge($timestamp),
+        ];
+    }
+
+    /**
+     * Get the structured creation date from a timestamp.
+     *
+     * @param int|null $timestamp Unix timestamp or null
+     * @return array|null
+     */
+    private function getCreationDate($timestamp): ?array
     {
         if (empty($timestamp) || $timestamp <= 0) {
-            return [
-                'human' => null,
-                'age' => null,
-            ];
+            return null;
         }
 
         $dt = Carbon::createFromTimestampUTC($timestamp);
 
-        // Calculate age parts (years, months, days)
+        return [
+            'year' => $dt->year,
+            'month' => $dt->month,
+            'day' => $dt->day,
+            'hour' => $dt->hour,
+            'minute' => $dt->minute,
+        ];
+    }
+
+    /**
+     * Get the account age breakdown from a timestamp.
+     *
+     * @param int|null $timestamp Unix timestamp or null
+     * @return array|null
+     */
+    private function getAccountAge($timestamp): ?array
+    {
+        if (empty($timestamp) || $timestamp <= 0) {
+            return null;
+        }
+
+        $dt = Carbon::createFromTimestampUTC($timestamp);
         $now = Carbon::now('UTC');
         $diff = $dt->diff($now);
 
-        $age = [
+        return [
             'years' => $diff->y,
             'months' => $diff->m,
             'days' => $diff->d,
-        ];
-
-        return [
-            'human' => $dt->toDayDateTimeString(),
-            'age' => $age,
         ];
     }
 }

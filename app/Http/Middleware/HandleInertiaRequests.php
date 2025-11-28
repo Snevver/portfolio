@@ -43,7 +43,6 @@ class HandleInertiaRequests extends Middleware
                 'gameIDsOwned' => session('gameIDsOwned'),
                 'totalPlaytimeMinutes' => session('totalPlaytimeMinutes'),
                 'averagePlaytimeMinutes' => session('averagePlaytimeMinutes'),
-                'medianPlaytimeMinutes' => session('medianPlaytimeMinutes'),
                 'topGames' => session('topGames'),
                 'playedPercentage' => session('playedPercentage'),
             ],
