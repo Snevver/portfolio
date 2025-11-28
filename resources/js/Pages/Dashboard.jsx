@@ -7,9 +7,9 @@ export default function Dashboard() {
     const { steam } = usePage().props;
     const [swipeOut] = useState(false);
 
-    // useEffect(() => {
-    //     console.log("steam data:", steam);
-    // }, [steam]);
+    useEffect(() => {
+        console.log("steam data:", steam);
+    }, [steam]);
 
     // Function to format the account creation date
     const formatCreationDate = (timeCreated) => {
@@ -18,7 +18,41 @@ export default function Dashboard() {
         return `${day}-${month}-${year}`;
     };
 
-    // TO BE IMPLEMENTED: Function to format playtime from minutes to hours. You got it Son:)
+    // Color the persona state badge
+    let personaStateColor;
+
+    switch (steam.personaState) {
+        case "Offline":
+            personaStateColor = "gray";
+            break;
+        case "Online":
+            personaStateColor = "green";
+            break;
+        case "Busy":
+            personaStateColor = "red";
+            break;
+        case "Away":
+            personaStateColor = "yellow";
+            break;
+        default:
+            personaStateColor = "blue";
+            break;
+    }
+
+    // Convert the total and average playtime to hours if needed
+    let totalPlaytime;
+    if (steam.totalPlaytimeMinutes > 60) {
+        totalPlaytime = Math.floor(steam.totalPlaytimeMinutes / 60);
+    } else {
+        totalPlaytime = steam.totalPlaytimeMinutes;
+    }
+
+    let averagePlaytime;
+    if (steam.averagePlaytimeMinutes > 60) {
+        averagePlaytime = Math.floor(steam.averagePlaytimeMinutes / 60);
+    } else {
+        averagePlaytime = steam.averagePlaytimeMinutes;
+    }
 
     return (
         <Layout swipeOut={swipeOut}>
@@ -45,13 +79,16 @@ export default function Dashboard() {
                             </span>
                         </p>
 
-                        <div className="flex justify-center flex-wrap gap-2 mt-2">
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-300 border border-blue-500/30">
+                        <div className="flex justify-center sm:justify-start flex-wrap gap-2 mt-2">
+                            <span
+                                className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-${personaStateColor}-500/10 text-${personaStateColor}-300 border border-${personaStateColor}-500/30`}
+                            >
                                 {steam.personaState}
                             </span>
 
                             <span className="inline-flex text-center items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-300 border border-purple-500/30">
-                                Created on {formatCreationDate(steam.timeCreated)}
+                                Created on{" "}
+                                {formatCreationDate(steam.timeCreated)}
                             </span>
                         </div>
                     </div>
@@ -74,29 +111,27 @@ export default function Dashboard() {
                             Total playtime
                         </p>
 
-                        {/* Add function to show right time format (hours/minutes) based on totalPlaytimeMinutes */}
-                        {/* <p className="mt-2 text-2xl font-semibold text-white">
-                            {steam.totalPlaytimeHours}
+                        <p className="mt-2 text-2xl font-semibold text-white">
+                            {totalPlaytime}
 
                             <span className="ml-1 text-sm text-gray-400">
-                                hours
+                                {totalPlaytime > 1 ? "hours" : "minutes"}
                             </span>
-                        </p> */}
+                        </p>
                     </Card>
 
                     <Card className="p-5 bg-gray-900/50 border-gray-700/70">
                         <p className="text-xs uppercase tracking-wide text-gray-400">
                             Average playtime
                         </p>
-                            
-                        {/* Add function to show right time format (hours/minutes) based on totalPlaytimeMinutes */}
-                        {/* <p className="mt-2 text-2xl font-semibold text-white">
-                            {steam.averagePlaytimeHours}
+
+                        <p className="mt-2 text-2xl font-semibold text-white">
+                            {averagePlaytime}
 
                             <span className="ml-1 text-sm text-gray-400">
-                                hours
+                                {averagePlaytime > 1 ? "hours" : "minutes"}
                             </span>
-                        </p> */}
+                        </p>
                     </Card>
 
                     <Card className="p-5 bg-gray-900/50 border-gray-700/70">
