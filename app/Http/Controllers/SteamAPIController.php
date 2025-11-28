@@ -69,10 +69,11 @@ class SteamAPIController extends Controller
                     if ($userSteamID && $isPublicProfile) {
                         try {
                             $ownedStats = $stats->getOwnedGamesStats($userSteamID, 5);
-                            $timeCreated = $stats->getAccountCreationDate($player['timecreated'] ?? null);
+                            $timeCreated = $stats->getAccountAgeAndCreationDate($player['timecreated'] ?? null);
+                            $personaState = $identity->getPersonaStateMeaning($player['personastate'] ?? 0);
 
                             // Put all relevant user data into the session
-                            $userSession->storeUserSession($userSteamID, $player, $ownedStats, $timeCreated);
+                            $userSession->storeUserSession($userSteamID, $player, $ownedStats, $timeCreated, $personaState);
                         } catch (\Throwable $exception) {
                             Log::error('Failed to write session data', [
                                 'exception' => $exception->getMessage(),

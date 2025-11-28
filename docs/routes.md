@@ -35,17 +35,24 @@ This document outlines the routes of the application. It can be used to easily f
 	- `userSteamID` values are stored and communicated as strings (not raw numbers) to avoid integer precision loss in JavaScript.
 	- When a public profile is found the server stores session keys and exposes them via Inertia as `page.props.steam`. The keys available in `steam` are:
 		- `steamID` (string|null) — the numeric SteamID as a string
+		- `personaState` (string) — a human readable persona state. Keys + values:
+    		- 0 => Offline
+    		- 1 => Online
+    		- 2 => Busy
+    		- 3 => Away
+    		- 4 => Snooze
+    		- 5 => Looking to trade
+    		- 6 => Looking to play
 		- `publicProfile` (bool)
 		- `steamProfileURL` (string|null) — the full Steam profile URL
 		- `profilePictureURL` (string|null) — URL to the Steam profile avatar
 		- `username` (string|null)
-		- `timeCreated` (object|null) — normalized creation data (see backend docs)
-		- `accountAge` (object|null) — breakdown of years/months/days (if available)
-		- `totalGamesOwned` (int)
-		- `gameIDsOwned` (array)
-		- `totalPlaytimeMinutes` (int)
-		- `averagePlaytimeMinutes` (float)
-		- `medianPlaytimeMinutes` (float)
-		- `topGames` (array)
-		- `playedPercentage` (float 0..1)
+	- `timeCreated` (object|null) — normalized creation data (see backend docs)
+	- `accountAge` (object|null) — breakdown of years/months/days (if available)
+	- `totalGamesOwned` (int)
+	- `gameIDsOwned` (array)
+	- `totalPlaytimeMinutes` (int)
+	- `averagePlaytimeMinutes` (int)
+	- `topGames` (array)
+	- `playedPercentage` (float 0..1)
 	- Frontend components can access these values through `usePage().props.steam` (Inertia).

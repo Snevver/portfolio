@@ -22,23 +22,23 @@ class UserSessionService
      * @param array|null $timeCreated
      * @return void
      */
-    public function storeUserSession(string $steamId, ?array $player, array $ownedStats, ?array $timeCreated): void
+    public function storeUserSession(string $steamId, ?array $player, array $ownedStats, ?array $timeCreated, string $personaState): void
     {
         $this->session->put([
             'userSteamID' => $steamId,
+            'personaState' => $personaState,
             'publicProfile' => ($player['communityvisibilitystate'] ?? 0) === 3,
             'steamProfileURL' => $player['profileurl'] ?? null,
             'profilePictureURL' => $player['avatarfull'] ?? null,
             'username' => $player['personaname'] ?? null,
-            'timeCreated' => $timeCreated['human'] ?? null,
+            'timeCreated' => $timeCreated['date'] ?? null,
             'accountAge' => $timeCreated['age'] ?? null,
             'totalGamesOwned' => $ownedStats['game_count'] ?? 0,
             'gameIDsOwned' => $ownedStats['game_ids'] ?? [],
             'totalPlaytimeMinutes' => $ownedStats['total_playtime_minutes'] ?? 0,
-            'averagePlaytimeMinutes' => $ownedStats['average_playtime_minutes'] ?? 0.0,
-            'medianPlaytimeMinutes' => $ownedStats['median_playtime_minutes'] ?? 0.0,
+            'averagePlaytimeMinutes' => round($ownedStats['average_playtime_minutes']) ?? 0,
             'topGames' => $ownedStats['top_games'] ?? [],
-            'playedPercentage' => $ownedStats['played_percentage'] ?? 0.0,
+            'playedPercentage' => $ownedStats['played_percentage'] ?? 0.00,
         ]);
     }
 
