@@ -12,6 +12,7 @@ export default function Landing() {
     const [isValidInput, setIsValidInput] = useState(null);
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
     const [swipeOut, setSwipeOut] = useState(false);
+
     /**
      * Validates if the input is a valid Steam ID or URL and if so, returns a big amount of user data.
      * Accepts:
@@ -126,7 +127,11 @@ export default function Landing() {
             // 3 = valid user, public profile
             if (responseCode === 3) {
                 // Redirect to dashboard
-                router.visit("/dashboard");
+                setSwipeOut(true);
+
+                setTimeout(() => {
+                    router.visit("/dashboard");
+                }, 300);
             } else if (responseCode === 2) {
                 // Tell user to set profile to public
                 setError(
