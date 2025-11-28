@@ -39,4 +39,24 @@ class SteamIdentityService
 
         return $input;
     }
+
+    /**
+     * Get the meaning of a Steam persona state code.
+     *
+     * @param int $personaState Numeric persona state code
+     * @return string Human-readable persona state
+     */
+    public function getPersonaStateMeaning(int $personaState): string
+    {
+        return match ($personaState) {
+            0 => 'Offline',
+            1 => 'Online',
+            2 => 'Busy',
+            3 => 'Away',
+            4 => 'Snooze',
+            5 => 'Looking to trade',
+            6 => 'Looking to play',
+            default => 'Unknown',
+        };
+    }
 }

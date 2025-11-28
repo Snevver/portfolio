@@ -16,16 +16,16 @@ class GameStatsCalculator
     {
         $total = $this->getGameCount($games);
         $ownedGameIDs = $this->getGameIds($games);
-        $totalPlaytime = $this->getTotalPlaytimeMinutes($games);
-        $average = $this->getAveragePlaytimeMinutes($games);
+        $totalPlaytime = $this->getTotalPlaytimeHours($games);
+        $average = $this->getAveragePlaytimeHours($games);
         $top = $this->getTopGames($games, $topN);
         $playedPercentage = $this->getPlayedPercentage($games);
 
         return [
             'game_count' => $total,
             'game_ids' => $ownedGameIDs,
-            'total_playtime_minutes' => $totalPlaytime,
-            'average_playtime_minutes' => $average,
+            'total_playtime_hours' => $totalPlaytime,
+            'average_playtime_hours' => $average,
             'top_games' => $top,
             'played_percentage' => $playedPercentage,
         ];
@@ -61,19 +61,19 @@ class GameStatsCalculator
     }
 
     /**
-     * Sum playtime_forever for all games (minutes).
+     * Sum playtime_forever for all games (hours).
      *
      * @param array $games
      * @return int
      */
-    public function getTotalPlaytimeMinutes(array $games): int
+    public function getTotalPlaytimeHours(array $games): int
     {
         $total = 0;
         foreach ($games as $game) {
             $total += (int) ($game['playtime_forever'] ?? 0);
         }
 
-        return $total;
+        return $total / 60;
     }
 
     /**
@@ -82,11 +82,11 @@ class GameStatsCalculator
      * @param array $games
      * @return float
      */
-    public function getAveragePlaytimeMinutes(array $games): float
+    public function getAveragePlaytimeHours(array $games): float
     {
-        $total = $this->getTotalPlaytimeMinutes($games);
+        $total = $this->getTotalPlaytimeHours($games);
         $count = $this->getGameCount($games);
-        return $count > 0 ? ($total / $count) : 0.0;
+        return ($count > 0 ? ($total / $count) / 60.0 : 0.0);
     }
 
     /**
@@ -105,14 +105,11 @@ class GameStatsCalculator
         $topGames = array_slice($games, 0, $topN);
         $result = [];
         foreach ($topGames as $topGame) {
-            Log::info('Top game', ['game' => $topGame]); // Debug log to inspect top game data
             $result[] = [
                 'appid' => $topGame['appid'] ?? null,
                 'name' => $topGame['name'] ?? null,
                 'playtime_forever' => (int) ($topGame['playtime_forever'] ?? 0),
-
-                // NOT FINISHED YET
-                // 'cover_url' => "https://steamcdn-a.akamaihd.net/steam/apps/{$topGame['appid']}/capsule_616x353.jpg" ?? null,
+                'cover_url' => "https://steamcdn-a.akamaihd.net/steam/apps/{$topGame['appid']}/capsule_616x353.jpg" ?? null,
             ];
         }
 

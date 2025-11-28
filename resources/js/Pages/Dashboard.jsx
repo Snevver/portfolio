@@ -7,10 +7,18 @@ export default function Dashboard() {
     const { steam } = usePage().props;
     const [swipeOut] = useState(false);
 
+    // useEffect(() => {
+    //     console.log("steam data:", steam);
+    // }, [steam]);
+
     // Process some stats before they are displayed
     const playedPercentage = Math.round(steam.playedPercentage * 100);
-    const totalPlaytimeHours = Math.round(steam.totalPlaytimeMinutes / 60);
-    const averagePlaytimeHours = Math.round(steam.averagePlaytimeMinutes / 60);
+
+    const formatCreationDate = (timeCreated) => {
+        if (!timeCreated) return "Unknown";
+        const { year, month, day } = timeCreated;
+        return `${day}-${month}-${year}`;
+    };
 
     return (
         <Layout swipeOut={swipeOut}>
@@ -38,13 +46,12 @@ export default function Dashboard() {
                         </p>
 
                         <div className="flex justify-center flex-wrap gap-2 mt-2">
-                            {/* PLACEHOLDER */}
                             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-300 border border-blue-500/30">
-                                online
+                                {steam.personaState}
                             </span>
 
                             <span className="inline-flex text-center items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-300 border border-purple-500/30">
-                                created on {steam.timeCreated}
+                                Created on {formatCreationDate(steam.timeCreated)}
                             </span>
                         </div>
                     </div>
@@ -68,7 +75,7 @@ export default function Dashboard() {
                         </p>
 
                         <p className="mt-2 text-2xl font-semibold text-white">
-                            {totalPlaytimeHours}
+                            {steam.totalPlaytimeHours}
 
                             <span className="ml-1 text-sm text-gray-400">
                                 hours
@@ -82,7 +89,7 @@ export default function Dashboard() {
                         </p>
 
                         <p className="mt-2 text-2xl font-semibold text-white">
-                            {averagePlaytimeHours}
+                            {steam.averagePlaytimeHours}
 
                             <span className="ml-1 text-sm text-gray-400">
                                 hours

@@ -30,8 +30,8 @@ class SteamStatsService
      * @return array{
      *   game_count:int,
      *   game_ids:int[],
-     *   total_playtime_minutes:int,
-     *   average_playtime_minutes:float,
+     *   total_playtime_hours:int,
+     *   average_playtime_hours:float,
      *   top_games:array,
      *   played_percentage:float
      * }
@@ -79,8 +79,6 @@ class SteamStatsService
             'year' => $dt->year,
             'month' => $dt->month,
             'day' => $dt->day,
-            'hour' => $dt->hour,
-            'minute' => $dt->minute,
         ];
     }
 

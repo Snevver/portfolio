@@ -33,6 +33,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'steam' => [
                 'steamID' => session('userSteamID'),
+                'personaState' => session('personaState'),
                 'publicProfile' => session('publicProfile'),
                 'steamProfileURL' => session('steamProfileURL'),
                 'profilePictureURL' => session('profilePictureURL'),
@@ -41,8 +42,8 @@ class HandleInertiaRequests extends Middleware
                 'accountAge' => session('accountAge'),
                 'totalGamesOwned' => session('totalGamesOwned'),
                 'gameIDsOwned' => session('gameIDsOwned'),
-                'totalPlaytimeMinutes' => session('totalPlaytimeMinutes'),
-                'averagePlaytimeMinutes' => session('averagePlaytimeMinutes'),
+                'totalPlaytimeHours' => session('totalPlaytimeHours'),
+                'averagePlaytimeHours' => session('averagePlaytimeHours'),
                 'topGames' => session('topGames'),
                 'playedPercentage' => session('playedPercentage'),
             ],
