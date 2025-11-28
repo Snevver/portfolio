@@ -44,7 +44,7 @@ This document outlines the routes of the application. It can be used to easily f
 		- `totalGamesOwned` (int)
 		- `gameIDsOwned` (array)
 		- `totalPlaytimeMinutes` (int)
-		- `avgPlaytimeMinutes` (float)
+		- `averagePlaytimeMinutes` (float)
 		- `medianPlaytimeMinutes` (float)
 		- `topGames` (array)
 		- `playedPercentage` (float 0..1)

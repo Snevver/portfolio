@@ -35,7 +35,7 @@ class UserSessionService
             'totalGamesOwned' => $ownedStats['game_count'] ?? 0,
             'gameIDsOwned' => $ownedStats['game_ids'] ?? [],
             'totalPlaytimeMinutes' => $ownedStats['total_playtime_minutes'] ?? 0,
-            'avgPlaytimeMinutes' => $ownedStats['avg_playtime_minutes'] ?? 0.0,
+            'averagePlaytimeMinutes' => $ownedStats['average_playtime_minutes'] ?? 0.0,
             'medianPlaytimeMinutes' => $ownedStats['median_playtime_minutes'] ?? 0.0,
             'topGames' => $ownedStats['top_games'] ?? [],
             'playedPercentage' => $ownedStats['played_percentage'] ?? 0.0,

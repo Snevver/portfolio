@@ -11,15 +11,6 @@ use App\Services\UserSessionService;
 use App\Services\ValidationResponse;
 use Illuminate\Support\Facades\Log;
 
-/**
- * Steam API controller.
- *
- * Response code constants defined on the class indicate the possible outcomes
- * of the `validateUser` endpoint:
- * - 1: Invalid user (user not found / steamid resolution failed)
- * - 2: Valid user but private profile
- * - 3: Valid user with public profile
- */
 class SteamAPIController extends Controller
 {
     // Response codes
@@ -35,6 +26,10 @@ class SteamAPIController extends Controller
      * - 3 = public profile
      *
      * @param Request $request
+     * @param SteamIdentityService $identity
+     * @param SteamAPIClient $client
+     * @param SteamStatsService $stats
+     * @param UserSessionService $userSession
      * @return \Illuminate\Http\JsonResponse
      */
     public function validateUser(Request $request, SteamIdentityService $identity, SteamAPIClient $client, SteamStatsService $stats, UserSessionService $userSession)

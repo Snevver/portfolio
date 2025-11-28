@@ -16,7 +16,7 @@ class GameStatsCalculator
         $total = $this->getGameCount($games);
         $ownedGameIDs = $this->getGameIds($games);
         $totalPlaytime = $this->getTotalPlaytimeMinutes($games);
-        $avg = $this->getAvgPlaytimeMinutes($games);
+        $average = $this->getAveragePlaytimeMinutes($games);
         $median = $this->getMedianPlaytimeMinutes($games);
         $top = $this->getTopGames($games, $topN);
         $playedPercentage = $this->getPlayedPercentage($games);
@@ -25,7 +25,7 @@ class GameStatsCalculator
             'game_count' => $total,
             'game_ids' => $ownedGameIDs,
             'total_playtime_minutes' => $totalPlaytime,
-            'avg_playtime_minutes' => $avg,
+            'average_playtime_minutes' => $average,
             'median_playtime_minutes' => $median,
             'top_games' => $top,
             'played_percentage' => $playedPercentage,
@@ -83,7 +83,7 @@ class GameStatsCalculator
      * @param array $games
      * @return float
      */
-    public function getAvgPlaytimeMinutes(array $games): float
+    public function getAveragePlaytimeMinutes(array $games): float
     {
         $total = $this->getTotalPlaytimeMinutes($games);
         $count = $this->getGameCount($games);

@@ -31,7 +31,7 @@ class SteamStatsService
      *   game_count:int,
      *   game_ids:int[],
      *   total_playtime_minutes:int,
-     *   avg_playtime_minutes:float,
+     *   average_playtime_minutes:float,
      *   median_playtime_minutes:float,
      *   top_games:array,
      *   played_percentage:float
