@@ -11,14 +11,14 @@ export default function Dashboard() {
     //     console.log("steam data:", steam);
     // }, [steam]);
 
-    // Process some stats before they are displayed
-    const playedPercentage = Math.round(steam.playedPercentage * 100);
-
+    // Function to format the account creation date
     const formatCreationDate = (timeCreated) => {
         if (!timeCreated) return "Unknown";
         const { year, month, day } = timeCreated;
         return `${day}-${month}-${year}`;
     };
+
+    // TO BE IMPLEMENTED: Function to format playtime from minutes to hours. You got it Son:)
 
     return (
         <Layout swipeOut={swipeOut}>
@@ -74,27 +74,29 @@ export default function Dashboard() {
                             Total playtime
                         </p>
 
-                        <p className="mt-2 text-2xl font-semibold text-white">
+                        {/* Add function to show right time format (hours/minutes) based on totalPlaytimeMinutes */}
+                        {/* <p className="mt-2 text-2xl font-semibold text-white">
                             {steam.totalPlaytimeHours}
 
                             <span className="ml-1 text-sm text-gray-400">
                                 hours
                             </span>
-                        </p>
+                        </p> */}
                     </Card>
 
                     <Card className="p-5 bg-gray-900/50 border-gray-700/70">
                         <p className="text-xs uppercase tracking-wide text-gray-400">
                             Average playtime
                         </p>
-
-                        <p className="mt-2 text-2xl font-semibold text-white">
+                            
+                        {/* Add function to show right time format (hours/minutes) based on totalPlaytimeMinutes */}
+                        {/* <p className="mt-2 text-2xl font-semibold text-white">
                             {steam.averagePlaytimeHours}
 
                             <span className="ml-1 text-sm text-gray-400">
                                 hours
                             </span>
-                        </p>
+                        </p> */}
                     </Card>
 
                     <Card className="p-5 bg-gray-900/50 border-gray-700/70">
@@ -103,7 +105,7 @@ export default function Dashboard() {
                         </p>
 
                         <p className="mt-2 text-2xl font-semibold text-white">
-                            {playedPercentage}
+                            {steam.playedPercentage}
 
                             <span className="ml-1 text-sm text-gray-400">
                                 %

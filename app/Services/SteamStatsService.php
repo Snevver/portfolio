@@ -30,8 +30,8 @@ class SteamStatsService
      * @return array{
      *   game_count:int,
      *   game_ids:int[],
-     *   total_playtime_hours:int,
-     *   average_playtime_hours:float,
+     *   total_playtime_minutes:int,
+     *   average_playtime_minutes:int,
      *   top_games:array,
      *   played_percentage:float
      * }

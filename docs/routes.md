@@ -51,8 +51,8 @@ This document outlines the routes of the application. It can be used to easily f
 	- `accountAge` (object|null) — breakdown of years/months/days (if available)
 	- `totalGamesOwned` (int)
 	- `gameIDsOwned` (array)
-	- `totalPlaytimeHours` (int)
-	- `averagePlaytimeHours` (float)
+	- `totalPlaytimeMinutes` (int)
+	- `averagePlaytimeMinutes` (int)
 	- `topGames` (array)
 	- `playedPercentage` (float 0..1)
 	- Frontend components can access these values through `usePage().props.steam` (Inertia).

@@ -16,16 +16,16 @@ class GameStatsCalculator
     {
         $total = $this->getGameCount($games);
         $ownedGameIDs = $this->getGameIds($games);
-        $totalPlaytime = $this->getTotalPlaytimeHours($games);
-        $average = $this->getAveragePlaytimeHours($games);
+        $totalPlaytime = $this->getTotalPlaytimeMinutes($games);
+        $average = $this->getAveragePlaytimeMinutes($games);
         $top = $this->getTopGames($games, $topN);
         $playedPercentage = $this->getPlayedPercentage($games);
 
         return [
             'game_count' => $total,
             'game_ids' => $ownedGameIDs,
-            'total_playtime_hours' => $totalPlaytime,
-            'average_playtime_hours' => $average,
+            'total_playtime_minutes' => $totalPlaytime,
+            'average_playtime_minutes' => $average,
             'top_games' => $top,
             'played_percentage' => $playedPercentage,
         ];
@@ -61,32 +61,32 @@ class GameStatsCalculator
     }
 
     /**
-     * Sum playtime_forever for all games (hours).
+     * Sum playtime_forever for all games (minutes).
      *
      * @param array $games
      * @return int
      */
-    public function getTotalPlaytimeHours(array $games): int
+    public function getTotalPlaytimeMinutes(array $games): int
     {
         $total = 0;
         foreach ($games as $game) {
             $total += (int) ($game['playtime_forever'] ?? 0);
         }
 
-        return $total / 60;
+        return $total;
     }
 
     /**
      * Average playtime per owned game.
      *
      * @param array $games
-     * @return float
+     * @return int $average
      */
-    public function getAveragePlaytimeHours(array $games): float
+    public function getAveragePlaytimeMinutes(array $games): int
     {
-        $total = $this->getTotalPlaytimeHours($games);
+        $total = $this->getTotalPlaytimeMinutes($games);
         $count = $this->getGameCount($games);
-        return ($count > 0 ? ($total / $count) / 60.0 : 0.0);
+        return ($count > 0 ? ($total / $count) : 0);
     }
 
     /**
@@ -117,13 +117,19 @@ class GameStatsCalculator
     }
 
     /**
-     * Fraction of games that have playtime > 0 (0..1)
+     * Fraction of games that have playtime > 0 (0..100)
      *
      * @param array $games
-     * @return float
+     * @return int $playedPercentage
      */
-    public function getPlayedPercentage(array $games): float
+    public function getPlayedPercentage(array $games): int
     {
+        $total = $this->getGameCount($games);
+        
+        if ($total === 0) {
+            return 0;
+        }
+        
         $played = 0;
         foreach ($games as $game) {
             if (((int) ($game['playtime_forever'] ?? 0)) > 0) {
@@ -131,7 +137,6 @@ class GameStatsCalculator
             }
         }
 
-        $total = $this->getGameCount($games);
-        return $total > 0 ? ($played / $total) : 0.0;
+        return (int) round(($played / $total) * 100);
     }
 }
