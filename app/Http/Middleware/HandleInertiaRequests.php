@@ -31,18 +31,18 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'auth' => [
-                'user' => $request->user(),
-            ],
             'steam' => [
                 'steamID' => session('userSteamID'),
                 'publicProfile' => session('publicProfile'),
-                'profileURL' => session('profileURL'),
+                'steamProfileURL' => session('steamProfileURL'),
+                'profilePictureURL' => session('profilePictureURL'),
                 'username' => session('username'),
                 'timeCreated' => session('timeCreated'),
+                'accountAge' => session('accountAge'),
                 'totalGamesOwned' => session('totalGamesOwned'),
+                'gameIDsOwned' => session('gameIDsOwned'),
                 'totalPlaytimeMinutes' => session('totalPlaytimeMinutes'),
-                'avgPlaytimeMinutes' => session('avgPlaytimeMinutes'),
+                'averagePlaytimeMinutes' => session('averagePlaytimeMinutes'),
                 'medianPlaytimeMinutes' => session('medianPlaytimeMinutes'),
                 'topGames' => session('topGames'),
                 'playedPercentage' => session('playedPercentage'),

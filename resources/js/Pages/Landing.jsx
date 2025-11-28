@@ -119,27 +119,24 @@ export default function Landing() {
                 }),
             });
 
-            const validationResponse = await rawResponse.json();
+            const responseCode = await rawResponse.json();
 
-            // Check if the user exists
-            if (validationResponse.userSteamID) {
-                if (validationResponse.isPublicProfile) {
-                    // Redirect to dashboard
-                    setSwipeOut(true);
-
-                    // Wait .3 seconds for the animation to complete
-                    setTimeout(() => {
-                        router.visit("/dashboard");
-                    }, 300);
-                } else {
-                    // Tell user to set profile to public
-                    console.log("Error: Profile not public");
-                    setError(
-                        "The profile you entered is not public. Please set your profile visibility to public in your privacy settings."
-                    );
-                }
+            // 1 = invalid user id (not found)
+            // 2 = valid user, but private profile
+            // 3 = valid user, public profile
+            if (responseCode === 3) {
+                // Redirect to dashboard
+                router.visit("/dashboard");
+            } else if (responseCode === 2) {
+                // Tell user to set profile to public
+                setError(
+                    "The profile you entered is not public. Please set your profile visibility to public in your privacy settings."
+                );
+            } else if (responseCode === 1) {
+                // User not found
+                setError("User not found");
             } else {
-                setError(validationResponse.data?.message || "User not found");
+                setError("Unexpected response from server");
             }
         } catch (error) {
             console.error("Error submitting User Steam ID:", error);
