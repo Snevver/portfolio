@@ -38,7 +38,7 @@ class UserSessionService
             'totalPlaytimeMinutes' => $ownedStats['total_playtime_minutes'] ?? 0,
             'averagePlaytimeMinutes' => round($ownedStats['average_playtime_minutes']) ?? 0,
             'topGames' => $ownedStats['top_games'] ?? [],
-            'playedPercentage' => $ownedStats['played_percentage'] ?? 0.0,
+            'playedPercentage' => $ownedStats['played_percentage'] ?? 0.00,
         ]);
     }
 

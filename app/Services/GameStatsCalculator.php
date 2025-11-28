@@ -120,9 +120,9 @@ class GameStatsCalculator
      * Fraction of games that have playtime > 0 (0..100)
      *
      * @param array $games
-     * @return int $playedPercentage
+     * @return float $playedPercentage
      */
-    public function getPlayedPercentage(array $games): int
+    public function getPlayedPercentage(array $games): float
     {
         $total = $this->getGameCount($games);
         
@@ -137,6 +137,6 @@ class GameStatsCalculator
             }
         }
 
-        return (int) round(($played / $total) * 100);
+        return round(($played / $total) * 100, 2);
     }
 }
