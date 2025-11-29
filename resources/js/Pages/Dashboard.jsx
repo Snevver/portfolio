@@ -12,12 +12,6 @@ export default function Dashboard() {
     }, [steam]);
 
     // Function to format the account creation date
-    const formatCreationDate = (timeCreated) => {
-        if (!timeCreated) return "Unknown";
-        const { year, month, day } = timeCreated;
-        return `${day}-${month}-${year}`;
-    };
-
     // Color the persona state badge
     const personaStateClasses = {
         Offline: "bg-gray-500/10 text-gray-300 border-gray-500/30",
@@ -78,8 +72,7 @@ export default function Dashboard() {
                             </span>
 
                             <span className="inline-flex text-center items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-300 border border-purple-500/30">
-                                Created on{" "}
-                                {formatCreationDate(steam.timeCreated)}
+                                Created on {steam.timeCreated || "Unknown"}
                             </span>
                         </div>
                     </div>
