@@ -48,10 +48,10 @@ class SteamStatsService
     /**
      * Normalize a Steam account creation timestamp into a structured payload.
      * Accepts an integer unix timestamp.
-     * Returns the structured date of creation and an account age breakdown.
+     * Returns the formatted date of creation and an account age breakdown.
      *
      * @param int|null $timestamp Unix timestamp or null
-     * @return array{date:array|null, age:array|null}
+     * @return array{date:string|null, age:array|null}
      */
     public function getAccountAgeAndCreationDate($timestamp): array
     {
@@ -62,12 +62,12 @@ class SteamStatsService
     }
 
     /**
-     * Get the structured creation date from a timestamp.
+     * Get the formatted creation date from a timestamp.
      *
      * @param int|null $timestamp Unix timestamp or null
-     * @return array|null
+     * @return string|null
      */
-    private function getCreationDate($timestamp): ?array
+    private function getCreationDate($timestamp): ?string
     {
         if (empty($timestamp) || $timestamp <= 0) {
             return null;
@@ -75,11 +75,7 @@ class SteamStatsService
 
         $dt = Carbon::createFromTimestampUTC($timestamp);
 
-        return [
-            'year' => $dt->year,
-            'month' => $dt->month,
-            'day' => $dt->day,
-        ];
+        return $dt->format('F j, Y');
     }
 
     /**
