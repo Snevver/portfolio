@@ -23,6 +23,7 @@
         "vite": "^7.0.7"
     },
     "dependencies": {
+        "lucide-react": "^0.555.0",
         "react-native-web": "^0.21.1"
     }
 }

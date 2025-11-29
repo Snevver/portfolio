@@ -1,4 +1,6 @@
 import React from "react";
+import { ChevronLeft } from "lucide-react";
+import { router } from "@inertiajs/react";
 
 export default function Layout({
     children,
@@ -6,19 +8,24 @@ export default function Layout({
     swipeOut = false,
 }) {
     return (
-        <div
-            className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 overflow-x-hidden"
-        >
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 overflow-x-hidden">
             {/* Background decoration */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
             </div>
 
+            <button
+                className="absolute top-4 left-4 text-gray-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30"
+                onClick={() => router.visit("/")}
+            >
+                <ChevronLeft />
+            </button>
+
             <div className="flex flex-col justify-between min-h-screen relative z-10">
                 {/* Header */}
                 <header
-                    className={`text-center pt-32 sm:pt-16 pb-8 px-4 ${
+                    className={`text-center pt-16 pb-8 px-4 ${
                         isLandingPage ? "animate-fade-in" : ""
                     }`}
                 >
