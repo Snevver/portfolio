@@ -25,14 +25,14 @@ export default function Dashboard() {
 
     // Convert the total and average playtime to hours if needed
     let totalPlaytime;
-    if (steam.totalPlaytimeMinutes > 60) {
+    if (steam.totalPlaytimeMinutes >= 60) {
         totalPlaytime = Math.floor(steam.totalPlaytimeMinutes / 60);
     } else {
         totalPlaytime = steam.totalPlaytimeMinutes;
     }
 
     let averagePlaytime;
-    if (steam.averagePlaytimeMinutes > 60) {
+    if (steam.averagePlaytimeMinutes >= 60) {
         averagePlaytime = Math.floor(steam.averagePlaytimeMinutes / 60);
     } else {
         averagePlaytime = steam.averagePlaytimeMinutes;
