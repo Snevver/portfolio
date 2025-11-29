@@ -11,7 +11,6 @@ export default function Dashboard() {
         console.log("steam data:", steam);
     }, [steam]);
 
-    // Function to format the account creation date
     // Color the persona state badge
     const personaStateClasses = {
         Offline: "bg-gray-500/10 text-gray-300 border-gray-500/30",
