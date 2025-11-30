@@ -1,12 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
+import { ChevronLeft } from "lucide-react";
 
 export default function Layout({
     children,
     isLandingPage = false,
     swipeOut = false,
 }) {
+    const [showBackButton, setShowBackButton] = useState(false);
+
+    // Wait 0.3 seconds before showing the back button as to not disrupt the swipe animation
+    setTimeout(() => {
+        setShowBackButton(true);
+    }, 300);
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 overflow-x-hidden">
+            {
+                /* Back button */
+                showBackButton && !isLandingPage && (
+                    <button
+                        className="absolute top-4 left-4 text-gray-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30 animate-pop-in"
+                        onClick={() => window.history.back()}
+                        aria-label="Go back"
+                    >
+                        <ChevronLeft />
+                    </button>
+                )
+            }
+
             {/* Background decoration */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
