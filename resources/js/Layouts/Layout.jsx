@@ -15,12 +15,15 @@ export default function Layout({
                 <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
             </div>
 
-            <button
-                className="absolute top-4 left-4 text-gray-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30"
-                onClick={() => router.visit("/")}
-            >
-                <ChevronLeft />
-            </button>
+            {/* Back button */}
+            {!isLandingPage && (
+                <button
+                    className="absolute top-4 left-4 text-gray-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30"
+                    onClick={() => router.visit("/")}
+                >
+                    <ChevronLeft />
+                </button>
+            )}
 
             <div className="flex flex-col justify-between min-h-screen relative z-10">
                 {/* Header */}

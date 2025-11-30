@@ -7,9 +7,18 @@ export default function Dashboard() {
     const { steam } = usePage().props;
     const [swipeOut] = useState(false);
 
+    // !!! Debugging. Remove before deployment.
     useEffect(() => {
         console.log("steam data:", steam);
     }, [steam]);
+
+    const playtimeConversion = (playtimeInMinutes) => {
+        if (playtimeInMinutes >= 60) {
+            return Math.floor(playtimeInMinutes / 60);
+        } else {
+            return playtimeInMinutes;
+        }
+    };
 
     // Color the persona state badge
     const personaStateClasses = {
@@ -22,21 +31,6 @@ export default function Dashboard() {
     const personaStateBadgeClass =
         personaStateClasses[steam.personaState] ||
         "bg-blue-500/10 text-blue-300 border-blue-500/30";
-
-    // Convert the total and average playtime to hours if needed
-    let totalPlaytime;
-    if (steam.totalPlaytimeMinutes >= 60) {
-        totalPlaytime = Math.floor(steam.totalPlaytimeMinutes / 60);
-    } else {
-        totalPlaytime = steam.totalPlaytimeMinutes;
-    }
-
-    let averagePlaytime;
-    if (steam.averagePlaytimeMinutes >= 60) {
-        averagePlaytime = Math.floor(steam.averagePlaytimeMinutes / 60);
-    } else {
-        averagePlaytime = steam.averagePlaytimeMinutes;
-    }
 
     return (
         <Layout swipeOut={swipeOut}>
@@ -95,10 +89,14 @@ export default function Dashboard() {
                         </p>
 
                         <p className="mt-2 text-2xl font-semibold text-white">
-                            {totalPlaytime}
+                            {playtimeConversion(steam.totalPlaytimeMinutes)}
 
                             <span className="ml-1 text-sm text-gray-400">
-                                {totalPlaytime > 1 ? "hours" : "minutes"}
+                                {playtimeConversion(
+                                    steam.totalPlaytimeMinutes
+                                ) > 1
+                                    ? "hours"
+                                    : "minutes"}
                             </span>
                         </p>
                     </Card>
@@ -109,10 +107,14 @@ export default function Dashboard() {
                         </p>
 
                         <p className="mt-2 text-2xl font-semibold text-white">
-                            {averagePlaytime}
+                            {playtimeConversion(steam.averagePlaytimeMinutes)}
 
                             <span className="ml-1 text-sm text-gray-400">
-                                {averagePlaytime > 1 ? "hours" : "minutes"}
+                                {playtimeConversion(
+                                    steam.averagePlaytimeMinutes
+                                ) > 1
+                                    ? "hours"
+                                    : "minutes"}
                             </span>
                         </p>
                     </Card>
