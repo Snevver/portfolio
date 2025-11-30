@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { usePage } from "@inertiajs/react";
+import { ChevronLeft } from "lucide-react";
+import { router } from "@inertiajs/react";
 import Layout from "../Layouts/Layout";
 import Card from "../Components/Card";
 
 export default function Dashboard() {
     const { steam } = usePage().props;
     const [swipeOut] = useState(false);
+    const [showBackButton, setShowBackButton] = useState(false);
 
     // !!! Debugging. Remove before deployment.
     useEffect(() => {
         console.log("steam data:", steam);
     }, [steam]);
 
+    /**
+     * Converts the playtime in minutes to hours if needed.
+     * @param {number} playtimeInMinutes - The playtime in minutes.
+     * @returns {number} The playtime in hours if needed, otherwise the playtime in minutes.
+     */
     const playtimeConversion = (playtimeInMinutes) => {
         if (playtimeInMinutes >= 60) {
             return Math.floor(playtimeInMinutes / 60);
@@ -19,6 +27,11 @@ export default function Dashboard() {
             return playtimeInMinutes;
         }
     };
+
+    // Wait 0.3 seconds before showing the back button as to not disrupt the swipe animation
+    setTimeout(() => {
+        setShowBackButton(true);
+    }, 300);
 
     // Color the persona state badge
     const personaStateClasses = {
@@ -34,6 +47,19 @@ export default function Dashboard() {
 
     return (
         <Layout swipeOut={swipeOut}>
+            {
+                /* Back button */
+                showBackButton && (
+                    <button
+                        className="absolute top-4 left-4 text-gray-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30 animate-pop-in"
+                        onClick={() => router.visit("/")}
+                        aria-label="Go back to landing page"
+                    >
+                        <ChevronLeft />
+                    </button>
+                )
+            }
+
             <Card className="flex flex-col w-full max-w-4xl mx-auto gap-8">
                 {/* Profile header */}
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
