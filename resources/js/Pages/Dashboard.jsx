@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { usePage } from "@inertiajs/react";
+import CountUp from "react-countup";
 import Layout from "../Layouts/Layout";
 import Card from "../Components/Card";
 
@@ -84,7 +85,11 @@ export default function Dashboard() {
                         </p>
 
                         <p className="mt-2 text-2xl font-semibold text-white">
-                            {steam.totalGamesOwned}
+                            <CountUp
+                                end={steam.totalGamesOwned}
+                                duration={1}
+                                start={0}
+                            />
                         </p>
                     </Card>
 
@@ -94,7 +99,13 @@ export default function Dashboard() {
                         </p>
 
                         <p className="mt-2 text-2xl font-semibold text-white">
-                            {playtimeConversion(steam.totalPlaytimeMinutes)}
+                            <CountUp
+                                end={playtimeConversion(
+                                    steam.totalPlaytimeMinutes
+                                )}
+                                duration={1}
+                                start={0}
+                            />
 
                             <span className="ml-1 text-sm text-gray-400">
                                 {playtimeConversion(
@@ -112,7 +123,13 @@ export default function Dashboard() {
                         </p>
 
                         <p className="mt-2 text-2xl font-semibold text-white">
-                            {playtimeConversion(steam.averagePlaytimeMinutes)}
+                            <CountUp
+                                end={playtimeConversion(
+                                    steam.averagePlaytimeMinutes
+                                )}
+                                duration={1}
+                                start={0}
+                            />
 
                             <span className="ml-1 text-sm text-gray-400">
                                 {playtimeConversion(
@@ -130,7 +147,12 @@ export default function Dashboard() {
                         </p>
 
                         <p className="mt-2 text-2xl font-semibold text-white">
-                            {steam.playedPercentage}
+                            <CountUp
+                                end={steam.playedPercentage}
+                                decimals={2}
+                                duration={1}
+                                start={0}
+                            />
 
                             <span className="ml-1 text-sm text-gray-400">
                                 %
