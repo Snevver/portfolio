@@ -20,7 +20,12 @@ export default function Layout({
                 showBackButton && !isLandingPage && (
                     <button
                         className="absolute top-4 left-4 text-gray-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30 animate-pop-in"
-                        onClick={() => window.history.back()}
+                        onClick={() => {
+                            // Redirect to the previous page
+                            setTimeout(() => {
+                                window.history.back();
+                            }, 300);
+                        }}
                         aria-label="Go back"
                     >
                         <ChevronLeft />
