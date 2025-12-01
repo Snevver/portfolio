@@ -1,14 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
+import { ChevronLeft } from "lucide-react";
 
 export default function Layout({
     children,
     isLandingPage = false,
     swipeOut = false,
 }) {
+    const [showBackButton, setShowBackButton] = useState(false);
+
+    // Wait 0.3 seconds before showing the back button as to not disrupt the swipe animation
+    setTimeout(() => {
+        setShowBackButton(true);
+    }, 300);
+
     return (
-        <div
-            className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 overflow-x-hidden"
-        >
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 overflow-x-hidden">
+            {
+                /* Back button */
+                showBackButton && !isLandingPage && (
+                    <button
+                        className="absolute top-4 left-4 text-gray-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30 animate-pop-in"
+                        onClick={() => {
+                            // Redirect to the previous page
+                            setTimeout(() => {
+                                window.history.back();
+                            }, 300);
+                        }}
+                        aria-label="Go back"
+                    >
+                        <ChevronLeft />
+                    </button>
+                )
+            }
+
             {/* Background decoration */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
@@ -18,7 +42,7 @@ export default function Layout({
             <div className="flex flex-col justify-between min-h-screen relative z-10">
                 {/* Header */}
                 <header
-                    className={`text-center pt-32 sm:pt-16 pb-8 px-4 ${
+                    className={`text-center pt-16 pb-8 px-4 ${
                         isLandingPage ? "animate-fade-in" : ""
                     }`}
                 >
@@ -32,7 +56,7 @@ export default function Layout({
 
                 {/* Main Content */}
                 <main
-                    className={`flex items-center justify-center w-full px-4 py-8 ${
+                    className={`flex flex-col items-center justify-center w-full px-4 py-8 ${
                         swipeOut
                             ? "animate-swipe-out"
                             : isLandingPage

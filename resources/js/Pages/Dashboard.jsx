@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { usePage } from "@inertiajs/react";
+import CountUp from "react-countup";
 import Layout from "../Layouts/Layout";
 import Card from "../Components/Card";
 
@@ -7,18 +8,35 @@ export default function Dashboard() {
     const { steam } = usePage().props;
     const [swipeOut] = useState(false);
 
-    // useEffect(() => {
-    //     console.log("steam data:", steam);
-    // }, [steam]);
+    // !!! Debugging. Remove before deployment.
+    useEffect(() => {
+        console.log("steam data:", steam);
+    }, [steam]);
 
-    // Function to format the account creation date
-    const formatCreationDate = (timeCreated) => {
-        if (!timeCreated) return "Unknown";
-        const { year, month, day } = timeCreated;
-        return `${day}-${month}-${year}`;
+    /**
+     * Converts the playtime in minutes to hours if needed.
+     * @param {number} playtimeInMinutes - The playtime in minutes.
+     * @returns {number} The playtime in hours if needed, otherwise the playtime in minutes.
+     */
+    const playtimeConversion = (playtimeInMinutes) => {
+        if (playtimeInMinutes >= 60) {
+            return Math.floor(playtimeInMinutes / 60);
+        } else {
+            return playtimeInMinutes;
+        }
     };
 
-    // TO BE IMPLEMENTED: Function to format playtime from minutes to hours. You got it Son:)
+    // Color the persona state badge
+    const personaStateClasses = {
+        Offline: "bg-gray-500/10 text-gray-300 border-gray-500/30",
+        Online: "bg-green-500/10 text-green-300 border-green-500/30",
+        Busy: "bg-red-500/10 text-red-300 border-red-500/30",
+        Away: "bg-yellow-500/10 text-yellow-300 border-yellow-500/30",
+    };
+
+    const personaStateBadgeClass =
+        personaStateClasses[steam.personaState] ||
+        "bg-blue-500/10 text-blue-300 border-blue-500/30";
 
     return (
         <Layout swipeOut={swipeOut}>
@@ -45,27 +63,33 @@ export default function Dashboard() {
                             </span>
                         </p>
 
-                        <div className="flex justify-center flex-wrap gap-2 mt-2">
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-300 border border-blue-500/30">
+                        <div className="flex justify-center sm:justify-start flex-wrap gap-2 mt-2">
+                            <span
+                                className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${personaStateBadgeClass}`}
+                            >
                                 {steam.personaState}
                             </span>
 
                             <span className="inline-flex text-center items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-300 border border-purple-500/30">
-                                Created on {formatCreationDate(steam.timeCreated)}
+                                Created on {steam.timeCreated || "Unknown"}
                             </span>
                         </div>
                     </div>
                 </div>
 
                 {/* Stats grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
                     <Card className="p-5 bg-gray-900/50 border-gray-700/70">
                         <p className="text-xs uppercase tracking-wide text-gray-400">
                             Total games
                         </p>
 
                         <p className="mt-2 text-2xl font-semibold text-white">
-                            {steam.totalGamesOwned}
+                            <CountUp
+                                end={steam.totalGamesOwned}
+                                duration={1}
+                                start={0}
+                            />
                         </p>
                     </Card>
 
@@ -74,29 +98,47 @@ export default function Dashboard() {
                             Total playtime
                         </p>
 
-                        {/* Add function to show right time format (hours/minutes) based on totalPlaytimeMinutes */}
-                        {/* <p className="mt-2 text-2xl font-semibold text-white">
-                            {steam.totalPlaytimeHours}
+                        <p className="mt-2 text-2xl font-semibold text-white">
+                            <CountUp
+                                end={playtimeConversion(
+                                    steam.totalPlaytimeMinutes
+                                )}
+                                duration={1}
+                                start={0}
+                            />
 
                             <span className="ml-1 text-sm text-gray-400">
-                                hours
+                                {playtimeConversion(
+                                    steam.totalPlaytimeMinutes
+                                ) > 1
+                                    ? "hours"
+                                    : "minutes"}
                             </span>
-                        </p> */}
+                        </p>
                     </Card>
 
                     <Card className="p-5 bg-gray-900/50 border-gray-700/70">
                         <p className="text-xs uppercase tracking-wide text-gray-400">
                             Average playtime
                         </p>
-                            
-                        {/* Add function to show right time format (hours/minutes) based on totalPlaytimeMinutes */}
-                        {/* <p className="mt-2 text-2xl font-semibold text-white">
-                            {steam.averagePlaytimeHours}
+
+                        <p className="mt-2 text-2xl font-semibold text-white">
+                            <CountUp
+                                end={playtimeConversion(
+                                    steam.averagePlaytimeMinutes
+                                )}
+                                duration={1}
+                                start={0}
+                            />
 
                             <span className="ml-1 text-sm text-gray-400">
-                                hours
+                                {playtimeConversion(
+                                    steam.averagePlaytimeMinutes
+                                ) > 1
+                                    ? "hours"
+                                    : "minutes"}
                             </span>
-                        </p> */}
+                        </p>
                     </Card>
 
                     <Card className="p-5 bg-gray-900/50 border-gray-700/70">
@@ -105,7 +147,12 @@ export default function Dashboard() {
                         </p>
 
                         <p className="mt-2 text-2xl font-semibold text-white">
-                            {steam.playedPercentage}
+                            <CountUp
+                                end={steam.playedPercentage}
+                                decimals={2}
+                                duration={1}
+                                start={0}
+                            />
 
                             <span className="ml-1 text-sm text-gray-400">
                                 %

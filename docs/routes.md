@@ -47,7 +47,7 @@ This document outlines the routes of the application. It can be used to easily f
 		- `steamProfileURL` (string|null) — the full Steam profile URL
 		- `profilePictureURL` (string|null) — URL to the Steam profile avatar
 		- `username` (string|null)
-	- `timeCreated` (object|null) — normalized creation data (see backend docs)
+	- `timeCreated` (string|null) — formatted creation date (e.g., "January 1, 2001")
 	- `accountAge` (object|null) — breakdown of years/months/days (if available)
 	- `totalGamesOwned` (int)
 	- `gameIDsOwned` (array)
