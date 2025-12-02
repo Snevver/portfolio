@@ -174,7 +174,7 @@ export default function Dashboard() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                     {steam.topGames.slice(0, 3).map((game, index) => {
                         const totalPlayTime = playtimeConversion(
                             game.playtime_forever
