@@ -19,7 +19,7 @@ export default function Layout({
                 /* Back button */
                 showBackButton && !isLandingPage && (
                     <button
-                        className="absolute top-4 left-4 text-gray-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30 animate-pop-in"
+                        className="fixed top-4 left-4 text-gray-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30 animate-pop-in"
                         onClick={() => {
                             // Redirect to the previous page
                             setTimeout(() => {
@@ -56,7 +56,7 @@ export default function Layout({
 
                 {/* Main Content */}
                 <main
-                    className={`flex flex-col items-center justify-center w-full px-4 py-8 ${
+                    className={`flex flex-col gap-8 items-center justify-center w-full px-4 py-8 ${
                         swipeOut
                             ? "animate-swipe-out"
                             : isLandingPage
