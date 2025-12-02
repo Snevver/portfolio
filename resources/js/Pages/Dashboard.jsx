@@ -87,7 +87,7 @@ export default function Dashboard() {
                         <p className="mt-2 text-2xl font-semibold text-white">
                             <CountUp
                                 end={steam.totalGamesOwned}
-                                duration={1}
+                                duration={1.5}
                                 start={0}
                             />
                         </p>
@@ -103,7 +103,7 @@ export default function Dashboard() {
                                 end={playtimeConversion(
                                     steam.totalPlaytimeMinutes
                                 )}
-                                duration={1}
+                                duration={1.5}
                                 start={0}
                             />
 
@@ -127,7 +127,7 @@ export default function Dashboard() {
                                 end={playtimeConversion(
                                     steam.averagePlaytimeMinutes
                                 )}
-                                duration={1}
+                                duration={1.5}
                                 start={0}
                             />
 
@@ -150,7 +150,7 @@ export default function Dashboard() {
                             <CountUp
                                 end={steam.playedPercentage}
                                 decimals={2}
-                                duration={1}
+                                duration={1.5}
                                 start={0}
                             />
 
