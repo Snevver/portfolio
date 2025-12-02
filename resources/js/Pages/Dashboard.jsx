@@ -193,7 +193,7 @@ export default function Dashboard() {
                                 <div className="relative w-full aspect-[16/9] overflow-hidden">
                                     <img
                                         src={game.cover_url}
-                                        alt={game.name}
+                                        alt={`${game.name} cover`}
                                         className="w-full h-full rounded-xl object-cover"
                                     />
                                 </div>
