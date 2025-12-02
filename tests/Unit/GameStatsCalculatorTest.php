@@ -103,7 +103,7 @@ class GameStatsCalculatorTest extends TestCase
     {
         $result = $this->calculator->getAveragePlaytimeMinutes([]);
         
-        $this->assertEquals(0.0, $result);
+        $this->assertEquals(0, $result);
     }
 
     /**
@@ -116,7 +116,7 @@ class GameStatsCalculatorTest extends TestCase
         
         $result = $this->calculator->getAveragePlaytimeMinutes($games);
         
-        $this->assertEquals(60.0, $result);
+        $this->assertEquals(60, $result);
     }
 
     /**
@@ -134,7 +134,7 @@ class GameStatsCalculatorTest extends TestCase
         $result = $this->calculator->getAveragePlaytimeMinutes($games);
         
         // (60 + 120 + 30) / 3 = 70
-        $this->assertEquals(70.0, $result);
+        $this->assertEquals(70, $result);
     }
 
     /**

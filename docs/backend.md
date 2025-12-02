@@ -192,6 +192,8 @@ We use PHPUnit for automated testing to ensure code quality and prevent regressi
 - `tests/Unit/`: Unit tests for individual classes and services.
   - `GameStatsCalculatorTest`: Tests the `GameStatsCalculator` service for computing game statistics (e.g., playtime calculations, top games).
   - `SteamIdentityServiceTest`: Tests the `SteamIdentityService` for input sanitization, vanity URL resolution, and persona state mapping.
+  - `SteamStatsServiceTest`: Tests the `SteamStatsService` for fetching and processing Steam user statistics.
+  - `ValidationResponseTest`: Tests the validation response logic for API input and output correctness.
 - `tests/Feature/`: Feature tests (for end-to-end functionality, if added).
 
 ### Running Tests
@@ -202,7 +204,7 @@ We use PHPUnit for automated testing to ensure code quality and prevent regressi
 - Generate coverage report: `php artisan test --coverage`
 
 ### Best Practices for Tests
-- Use descriptive test method names (e.g., `testSanitizeInput`).
+- Use descriptive test method names (e.g., `testSanitizeInputWithVanityUrl`).
 - Mock external dependencies (e.g., API clients) to keep tests fast and isolated.
 - Aim for high coverage, but focus on critical logic.
 - Run tests before committing changes to catch issues early.
@@ -211,14 +213,13 @@ We use PHPUnit for automated testing to ensure code quality and prevent regressi
 ```php
 class SteamIdentityServiceTest extends TestCase
 {
-    public function testSanitizeInput(): void
+    public function testSanitizeInputWithVanityUrl(): void
     {
         $clientMock = $this->createMock(SteamAPIClient::class);
         $service = new SteamIdentityService($clientMock);
 
         // Mock vanity resolution
-        $clientMock->expects($this->once())
-            ->method('resolveVanityUrl')
+        $clientMock->method('resolveVanityUrl')
             ->with('customname')
             ->willReturn('12345678901234567');
 

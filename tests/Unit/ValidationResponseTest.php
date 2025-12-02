@@ -26,7 +26,6 @@ class ValidationResponseTest extends TestCase
         $this->assertEquals(2, ValidationResponse::determine('12345', false));
     }
 
-        
     /**
      * Tests the determine method for public profile
      * @return void
