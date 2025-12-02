@@ -175,46 +175,48 @@ export default function Dashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-5">
-                    {steam.topGames.slice(0, 3).map((game, index) => (
-                        <Card
-                            className="bg-gray-900/50 border-gray-700/70"
-                            padding={5}
-                            key={game.appid}
-                        >
-                            <div className="absolute top-2 left-2 w-8 h-8 flex items-center justify-center z-30 text-sm text-gray-400 bg-gray-900/50 border border-gray-700/70 rounded-full">
-                                #{index + 1}
-                            </div>
+                    {steam.topGames.slice(0, 3).map((game, index) => {
+                        const totalPlayTime = playtimeConversion(
+                            game.playtime_forever
+                        );
 
-                            <div className="relative w-full aspect-[16/9] overflow-hidden">
-                                <img
-                                    src={game.cover_url}
-                                    alt={game.name}
-                                    className="w-full h-full rounded-xl object-cover"
-                                />
-                            </div>
+                        return (
+                            <Card
+                                className="bg-gray-900/50 border-gray-700/70"
+                                padding={5}
+                                key={game.appid}
+                            >
+                                <div className="absolute top-2 left-2 w-8 h-8 flex items-center justify-center z-30 text-sm text-gray-400 bg-gray-900/50 border border-gray-700/70 rounded-full">
+                                    #{index + 1}
+                                </div>
 
-                            <div className="p-3 pb-0 sm:p-4 sm:pb-0 flex flex-col gap-1">
-                                <p className="text-lg font-semibold text-white text-center">
-                                    {game.name}
-                                </p>
+                                <div className="relative w-full aspect-[16/9] overflow-hidden">
+                                    <img
+                                        src={game.cover_url}
+                                        alt={game.name}
+                                        className="w-full h-full rounded-xl object-cover"
+                                    />
+                                </div>
 
-                                <p className="text-sm text-gray-400 text-center">
-                                    <CountUp
-                                        end={playtimeConversion(
-                                            game.playtime_forever
-                                        )}
-                                        duration={1.5}
-                                        start={0}
-                                    />{" "}
-                                    {playtimeConversion(
-                                        game.playtime_forever
-                                    ) === 1
-                                        ? "hour played"
-                                        : "hours played"}
-                                </p>
-                            </div>
-                        </Card>
-                    ))}
+                                <div className="p-3 pb-0 sm:p-4 sm:pb-0 flex flex-col gap-1">
+                                    <p className="text-lg font-semibold text-white text-center">
+                                        {game.name}
+                                    </p>
+
+                                    <p className="text-sm text-gray-400 text-center">
+                                        <CountUp
+                                            end={totalPlayTime}
+                                            duration={1.5}
+                                            start={0}
+                                        />{" "}
+                                        {totalPlayTime === 1
+                                            ? "hour played"
+                                            : "hours played"}
+                                    </p>
+                                </div>
+                            </Card>
+                        );
+                    })}
                 </div>
             </Card>
         </Layout>
