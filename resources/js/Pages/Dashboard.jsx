@@ -182,7 +182,7 @@ export default function Dashboard() {
 
                         return (
                             <Card
-                                className="bg-gray-900/50 border-gray-700/70"
+                                className="relative bg-gray-900/50 border-gray-700/70"
                                 padding={5}
                                 key={game.appid}
                             >
