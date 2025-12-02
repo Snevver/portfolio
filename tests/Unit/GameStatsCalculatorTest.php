@@ -7,37 +7,59 @@ use PHPUnit\Framework\TestCase;
 
 class GameStatsCalculatorTest extends TestCase
 {
-    // Initialize the GameStatsCalculator instance
     private GameStatsCalculator $calculator;
 
-    // Set up before each test
+    /**
+     * Runs before each test to create a fresh calculator
+     */
     protected function setUp(): void
     {
         $this->calculator = new GameStatsCalculator();
     }
 
     /**
-     * Test the getGameCount method
+     * Tests if game count returns 0 for empty array
      * @return void
      */
-    public function testGetGameCount(): void
+    public function testGetGameCountWithEmptyArray(): void
     {
-        // Empty array: edge case
-        $this->assertEquals(0, $this->calculator->getGameCount([]));
-
-        // Single game
-        $this->assertEquals(1, $this->calculator->getGameCount([['appid' => 1]]));
-
-        // Multiple games
-        $this->assertEquals(3, $this->calculator->getGameCount([
-            ['appid' => 1],
-            ['appid' => 2],
-            ['appid' => 3]
-        ]));
+        $result = $this->calculator->getGameCount([]);
+        
+        $this->assertEquals(0, $result);
     }
 
     /**
-     * Test the getGameIds method
+     * Tests if game count returns 1 for single game
+     * @return void
+     */
+    public function testGetGameCountWithSingleGame(): void
+    {
+        $games = [['appid' => 1]];
+        
+        $result = $this->calculator->getGameCount($games);
+        
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * Tests if game count returns correct number for multiple games
+     * @return void
+     */
+    public function testGetGameCountWithMultipleGames(): void
+    {
+        $games = [
+            ['appid' => 1],
+            ['appid' => 2],
+            ['appid' => 3]
+        ];
+        
+        $result = $this->calculator->getGameCount($games);
+        
+        $this->assertEquals(3, $result);
+    }
+
+    /**
+     * Tests if game IDs are extracted correctly, skipping invalid entries
      * @return void
      */
     public function testGetGameIds(): void
@@ -45,15 +67,17 @@ class GameStatsCalculatorTest extends TestCase
         $games = [
             ['appid' => 10],
             ['appid' => 20],
-            ['name' => null], // Missing appid: edge case
+            ['name' => null], // Missing appid - should be skipped (edge case)
             ['appid' => 30],
         ];
 
-        $this->assertEquals([10, 20, 30], $this->calculator->getGameIds($games));
+        $result = $this->calculator->getGameIds($games);
+        
+        $this->assertEquals([10, 20, 30], $result);
     }
 
     /**
-     * Test the getTotalPlaytimeMinutes method
+     * Tests if total playtime is summed correctly, skipping invalid entries
      * @return void
      */
     public function testGetTotalPlaytimeMinutes(): void
@@ -61,36 +85,60 @@ class GameStatsCalculatorTest extends TestCase
         $games = [
             ['playtime_forever' => 60],
             ['playtime_forever' => 120],
-            ['name' => null], // Missing playtime: edge case
+            ['name' => null], // Missing playtime - should be skipped (edge case)
             ['playtime_forever' => 30],
         ];
 
-        $this->assertEquals(210, $this->calculator->getTotalPlaytimeMinutes($games));
+        $result = $this->calculator->getTotalPlaytimeMinutes($games);
+        
+        // 60 + 120 + 30 = 210
+        $this->assertEquals(210, $result);
     }
 
     /**
-     * Test the getAveragePlaytimeMinutes method
+     * Tests if average playtime returns 0 for empty array
      * @return void
      */
-    public function testGetAveragePlaytimeMinutes(): void
+    public function testGetAveragePlaytimeWithEmptyArray(): void
     {
-        // Empty array: edge case
-        $this->assertEquals(0.0, $this->calculator->getAveragePlaytimeMinutes([]));
+        $result = $this->calculator->getAveragePlaytimeMinutes([]);
+        
+        $this->assertEquals(0.0, $result);
+    }
 
-        // Single game
-        $this->assertEquals(60.0, $this->calculator->getAveragePlaytimeMinutes([['playtime_forever' => 60]]));
+    /**
+     * Tests if average playtime is calculated correctly for single game
+     * @return void
+     */
+    public function testGetAveragePlaytimeWithSingleGame(): void
+    {
+        $games = [['playtime_forever' => 60]];
+        
+        $result = $this->calculator->getAveragePlaytimeMinutes($games);
+        
+        $this->assertEquals(60.0, $result);
+    }
 
-        // Multiple games
+    /**
+     * Tests if average playtime is calculated correctly for multiple games
+     * @return void
+     */
+    public function testGetAveragePlaytimeWithMultipleGames(): void
+    {
         $games = [
             ['playtime_forever' => 60],
             ['playtime_forever' => 120],
             ['playtime_forever' => 30],
         ];
-        $this->assertEquals(70.0, $this->calculator->getAveragePlaytimeMinutes($games));
+        
+        $result = $this->calculator->getAveragePlaytimeMinutes($games);
+        
+        // (60 + 120 + 30) / 3 = 70
+        $this->assertEquals(70.0, $result);
     }
 
     /**
-     * Test the getTopGames method
+     * Tests if top games are sorted by playtime and limited to requested count
      * @return void
      */
     public function testGetTopGames(): void
@@ -103,40 +151,73 @@ class GameStatsCalculatorTest extends TestCase
             ['appid' => 5, 'name' => 'Game E', 'playtime_forever' => 40],
         ];
 
-        $top3 = $this->calculator->getTopGames($games, 3);
+        $result = $this->calculator->getTopGames($games, 3);
 
-        $this->assertCount(3, $top3);
-        $this->assertEquals(2, $top3[0]['appid']); // Game B, 60
-        $this->assertEquals(4, $top3[1]['appid']); // Game D, 50
-        $this->assertEquals(5, $top3[2]['appid']); // Game E, 40
-    }
-
-    public function testGetPlayedPercentage(): void
-    {
+        // Should return only 3 games
+        $this->assertCount(3, $result);
         
-        // None played: edge case
-        $games = [
-            ['playtime_forever' => 0],
-            ['playtime_forever' => 0],
-        ];
-        $this->assertEquals(0.0, $this->calculator->getPlayedPercentage($games));
-
-        // All played
-        $games = [
-            ['playtime_forever' => 10],
-            ['playtime_forever' => 20],
-        ];
-        $this->assertEquals(100.0, $this->calculator->getPlayedPercentage($games));
-
-        // Partial
-        $games = [
-            ['playtime_forever' => 10],
-            ['playtime_forever' => 0],
-            ['playtime_forever' => 20],
-        ];
-        $this->assertEquals(round((2/3) * 100, 2) , $this->calculator->getPlayedPercentage($games));
+        // Should be sorted by playtime (highest first)
+        $this->assertEquals(2, $result[0]['appid']); // Game B, 60 minutes
+        $this->assertEquals(4, $result[1]['appid']); // Game D, 50 minutes
+        $this->assertEquals(5, $result[2]['appid']); // Game E, 40 minutes
     }
 
+    /**
+     * Tests if played percentage returns 0 when no games are played
+     * @return void
+     */
+    public function testGetPlayedPercentageWithNoGamesPlayed(): void
+    {
+        $games = [
+            ['playtime_forever' => 0],
+            ['playtime_forever' => 0],
+        ];
+        
+        $result = $this->calculator->getPlayedPercentage($games);
+        
+        $this->assertEquals(0.0, $result);
+    }
+
+    /**
+     * Tests if played percentage returns 100 when all games are played
+     * @return void
+     */
+    public function testGetPlayedPercentageWithAllGamesPlayed(): void
+    {
+        $games = [
+            ['playtime_forever' => 10],
+            ['playtime_forever' => 20],
+        ];
+        
+        $result = $this->calculator->getPlayedPercentage($games);
+        
+        $this->assertEquals(100.0, $result);
+    }
+
+    /**
+     * Tests if played percentage calculates correctly for partially played library
+     * @return void
+     */
+    public function testGetPlayedPercentageWithPartiallyPlayedGames(): void
+    {
+        $games = [
+            ['playtime_forever' => 10],
+            ['playtime_forever' => 0],
+            ['playtime_forever' => 20],
+        ];
+        
+        $result = $this->calculator->getPlayedPercentage($games);
+        
+        // 2 out of 3 games played = 66.67%
+        $this->assertEquals(round((2/3) * 100, 2), $result);
+    }
+
+    /**
+     * Tests if computeAll returns all statistics correctly
+     * 
+     * This method calls all other methods and combines the results
+     * @return void
+     */
     public function testComputeAll(): void
     {
         $games = [
@@ -147,13 +228,16 @@ class GameStatsCalculatorTest extends TestCase
 
         $result = $this->calculator->computeAll($games, 2);
 
+        // Check all the computed statistics
         $this->assertEquals(3, $result['game_count']);
         $this->assertEquals([1, 2, 3], $result['game_ids']);
         $this->assertEquals(99, $result['total_playtime_minutes']);
         $this->assertEquals(33, $result['average_playtime_minutes']);
-        $this->assertCount(2, $result['top_games']);
-        $this->assertEquals(2, $result['top_games'][0]['appid']); // Game B
-        $this->assertEquals(1, $result['top_games'][1]['appid']); // Game A
         $this->assertEquals(100.0, $result['played_percentage']);
+        
+        // Check top games (should only return 2 as requested)
+        $this->assertCount(2, $result['top_games']);
+        $this->assertEquals(2, $result['top_games'][0]['appid']); // Game B has most playtime
+        $this->assertEquals(1, $result['top_games'][1]['appid']); // Game A is second
     }
 }
