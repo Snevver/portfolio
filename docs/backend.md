@@ -186,27 +186,45 @@ try {
 
 ## 7. Testing
 
-### Test structure
-- Write unit tests for models and services
-- Create feature tests for complete user workflows
-- Use factories for test data generation
+We use PHPUnit for automated testing to ensure code quality and prevent regressions. Tests are located in the `tests/` directory and follow Laravel's testing conventions.
 
-### Test naming
-- Use descriptive test method names
-- Follow the pattern: `test_it_can_do_something()`
-- Group related tests in the same test class
+### Test Structure
+- `tests/Unit/`: Unit tests for individual classes and services.
+  - `GameStatsCalculatorTest`: Tests the `GameStatsCalculator` service for computing game statistics (e.g., playtime calculations, top games).
+  - `SteamIdentityServiceTest`: Tests the `SteamIdentityService` for input sanitization, vanity URL resolution, and persona state mapping.
+  - `SteamStatsServiceTest`: Tests the `SteamStatsService` for fetching and processing Steam user statistics.
+  - `ValidationResponseTest`: Tests the validation response logic for API input and output correctness.
+- `tests/Feature/`: Feature tests (for end-to-end functionality, if added).
 
+### Running Tests
+- Run all tests: `php artisan test`
+- Run unit tests only: `php artisan test --testsuite=Unit`
+- Run a specific test file: `php artisan test tests/Unit/GameStatsCalculatorTest.php`
+- With verbose output: `php artisan test --verbose`
+- Generate coverage report: `php artisan test --coverage`
+
+### Best Practices for Tests
+- Use descriptive test method names (e.g., `testSanitizeInputWithVanityUrl`).
+- Mock external dependencies (e.g., API clients) to keep tests fast and isolated.
+- Aim for high coverage, but focus on critical logic.
+- Run tests before committing changes to catch issues early.
+
+### Example Test
 ```php
-class GameTest extends TestCase
+class SteamIdentityServiceTest extends TestCase
 {
-    public function test_it_can_create_a_game_with_valid_data()
+    public function testSanitizeInputWithVanityUrl(): void
     {
-        $gameData = Game::factory()->make()->toArray();
-        
-        $response = $this->post('/games', $gameData);
-        
-        $response->assertStatus(201);
-        $this->assertDatabaseHas('games', $gameData);
+        $clientMock = $this->createMock(SteamAPIClient::class);
+        $service = new SteamIdentityService($clientMock);
+
+        // Mock vanity resolution
+        $clientMock->method('resolveVanityUrl')
+            ->with('customname')
+            ->willReturn('12345678901234567');
+
+        $result = $service->sanitizeInput('https://steamcommunity.com/id/customname/', true);
+        $this->assertSame('12345678901234567', $result);
     }
 }
 ```
