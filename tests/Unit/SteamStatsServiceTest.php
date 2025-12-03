@@ -38,11 +38,11 @@ class SteamStatsServiceTest extends TestCase
      */
     public function testAccountWithPartialAge(): void
     {
-        // Pretend today is December 2, 2025
-        Carbon::setTestNow(Carbon::create(2025, 12, 2));
+        // Pretend today is December 2, 2025 UTC (use UTC so service comparisons match)
+        Carbon::setTestNow(Carbon::create(2025, 12, 2, 0, 0, 0, 'UTC'));
 
-        // Account created June 15, 2023 (2 years, 5 months, 17 days ago)
-        $timestamp = Carbon::create(2023, 6, 15)->getTimestamp();
+        // Account created June 15, 2023 UTC (2 years, 5 months, 17 days ago)
+        $timestamp = Carbon::create(2023, 6, 15, 0, 0, 0, 'UTC')->getTimestamp();
         
         // Call the method
         $result = $this->service->getAccountAgeAndCreationDate($timestamp);
