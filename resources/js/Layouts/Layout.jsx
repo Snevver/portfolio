@@ -8,8 +8,24 @@ export default function Layout({
 }) {
     const [showBackButton, setShowBackButton] = useState(false);
     const [isSwipingOut, setIsSwipingOut] = useState(false);
+    const [isReferred, setIsReferred] = useState(false);
 
     const isAnimatingOut = swipeOut || isSwipingOut;
+
+    /**
+     * Play the swipe out animation and then send the user back to the previous page
+     */
+    function handleBackNavigation() {
+        setIsSwipingOut(true);
+
+        setTimeout(() => {
+            if (window.location.pathname === "/dashboard") {
+                window.location.href = "/#referred";
+            } else {
+                window.history.back();
+            }
+        }, 300);
+    }
 
     // Wait 0.3 seconds before showing the back button as to not disrupt the swipe animation
     useEffect(() => {
@@ -20,20 +36,21 @@ export default function Layout({
         return () => clearTimeout(timer);
     }, []);
 
+    // Play a different animation if the user was referred
+    useEffect(() => {
+        if (window.location.hash === "#referred") {
+            setIsReferred(true);
+        }
+    }, []);
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 overflow-x-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 overflow-x-hidden overflow-y-hidden">
             {
                 /* Back button */
                 showBackButton && !isLandingPage && (
                     <button
                         className="fixed top-4 left-4 text-gray-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30 animate-pop-in"
-                        onClick={() => {
-                            // Play swipe-out animation first, then navigate back
-                            setIsSwipingOut(true);
-                            setTimeout(() => {
-                                window.history.back();
-                            }, 300);
-                        }}
+                        onClick={() => handleBackNavigation()}
                         aria-label="Go back"
                     >
                         <ChevronLeft />
@@ -51,7 +68,7 @@ export default function Layout({
                 {/* Header */}
                 <header
                     className={`text-center pt-16 pb-8 px-4 ${
-                        isLandingPage ? "animate-fade-in" : ""
+                        isLandingPage && !isReferred ? "animate-fade-in" : ""
                     }`}
                 >
                     <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent animate-title-gradient">
@@ -76,7 +93,15 @@ export default function Layout({
                 </main>
 
                 {/* Footer */}
-                <footer className="py-8 px-4 text-center text-gray-500 text-sm">
+                <footer
+                    className={`py-8 px-4 text-center text-gray-500 text-sm ${
+                        isAnimatingOut
+                            ? "animate-swipe-out"
+                            : isLandingPage && !isReferred
+                            ? "animate-fade-in"
+                            : "animate-swipe-in"
+                    }`}
+                >
                     © 2025{" "}
                     <a
                         href="https://github.com/Snevver"
