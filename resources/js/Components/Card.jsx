@@ -13,9 +13,11 @@ export default function Card({
     padding = 8,
     ...props
 }) {
+    let paddingClass = `p-${padding}`;
+
     return (
         <div
-            className={`p-${padding} rounded-2xl bg-gray-800/${transparency} backdrop-blur-sm border border-gray-700/50 shadow-2xl ${className}`}
+            className={`${paddingClass} rounded-2xl bg-gray-800/${transparency} backdrop-blur-sm border border-gray-700/50 shadow-2xl ${className}`}
             {...props}
         >
             {children}
