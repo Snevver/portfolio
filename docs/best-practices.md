@@ -135,13 +135,15 @@ Title: `<type>/<short description>`
 ```markdown
 ## Description
 
-[A summary of the changes, and anything that the reviewer should know about the changes.]
+<!-- A summary of the changes, and anything that the reviewer should know about the changes. -->
 
 ## List of changes
 
-* [Change 1, etc..]
+<!-- List of changes, each on a new line. -->
 
 ## Type of change
+
+<!-- Remove all change types that are not applicable to the changes. -->
 
 -   Bug fix(es) (non-breaking change which fixes an issue)
 -   New feature(s) (non-breaking change which adds functionality)
