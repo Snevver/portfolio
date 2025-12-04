@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { usePage } from "@inertiajs/react";
 import CountUp from "react-countup";
 import Layout from "../Layouts/Layout";
@@ -6,7 +6,6 @@ import Card from "../Components/Card";
 
 export default function Dashboard() {
     const { steam } = usePage().props;
-    const [swipeOut] = useState(false);
 
     // !!! Debugging. Remove before deployment.
     useEffect(() => {
@@ -39,7 +38,7 @@ export default function Dashboard() {
         "bg-blue-500/10 text-blue-300 border-blue-500/30";
 
     return (
-        <Layout swipeOut={swipeOut}>
+        <Layout>
             <Card className="flex flex-col w-full max-w-4xl mx-auto gap-8">
                 {/* Profile header */}
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-6">

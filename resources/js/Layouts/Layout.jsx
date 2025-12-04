@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 
 export default function Layout({
@@ -7,11 +7,18 @@ export default function Layout({
     swipeOut = false,
 }) {
     const [showBackButton, setShowBackButton] = useState(false);
+    const [isSwipingOut, setIsSwipingOut] = useState(false);
+
+    const isAnimatingOut = swipeOut || isSwipingOut;
 
     // Wait 0.3 seconds before showing the back button as to not disrupt the swipe animation
-    setTimeout(() => {
-        setShowBackButton(true);
-    }, 300);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowBackButton(true);
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 overflow-x-hidden">
@@ -21,7 +28,8 @@ export default function Layout({
                     <button
                         className="fixed top-4 left-4 text-gray-300 hover:scale-110 active:scale-95 transition-all duration-200 z-30 animate-pop-in"
                         onClick={() => {
-                            // Redirect to the previous page
+                            // Play swipe-out animation first, then navigate back
+                            setIsSwipingOut(true);
                             setTimeout(() => {
                                 window.history.back();
                             }, 300);
@@ -57,7 +65,7 @@ export default function Layout({
                 {/* Main Content */}
                 <main
                     className={`flex flex-col gap-8 items-center justify-center w-full px-4 py-8 ${
-                        swipeOut
+                        isAnimatingOut
                             ? "animate-swipe-out"
                             : isLandingPage
                             ? ""
