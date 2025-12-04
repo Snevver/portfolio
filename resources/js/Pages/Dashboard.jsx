@@ -182,7 +182,13 @@ export default function Dashboard() {
 
                         return (
                             <Card
-                                className="relative bg-gray-900/50 border-gray-700/70"
+                                className="relative bg-gray-900/50 border-gray-700/70 hover:bg-gray-900/70 hover:cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                                onClick={() =>
+                                    window.open(
+                                        `https://store.steampowered.com/app/${game.appid}`,
+                                        "_blank"
+                                    )
+                                }
                                 padding={5}
                                 key={game.appid}
                             >
