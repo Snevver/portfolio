@@ -35,6 +35,7 @@ export default function Card({
         70: "bg-gray-800/70",
         80: "bg-gray-800/80",
         90: "bg-gray-800/90",
+        95: "bg-gray-800/95",
     };
 
     const paddingClass = paddingClasses[padding] ?? paddingClasses[8];
