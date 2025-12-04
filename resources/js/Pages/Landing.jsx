@@ -12,6 +12,7 @@ export default function Landing() {
     const [isValidInput, setIsValidInput] = useState(null);
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
     const [swipeOut, setSwipeOut] = useState(false);
+    const [isReferred, setIsReferred] = useState(false);
 
     /**
      * Validates if the input is a valid Steam ID or URL and if so, returns a big amount of user data.
@@ -56,42 +57,6 @@ export default function Landing() {
             return false;
         }
     }
-
-    /**
-     * Updates the validation state when user steamID changes.
-     */
-    useEffect(() => {
-        const validation = isValidUserSteamID(userSteamID);
-        setIsValidInput(validation);
-        // Clear error when input becomes valid
-        if (validation === true && error) {
-            setError(null);
-        }
-    }, [userSteamID]);
-
-    /**
-     * Handles ESC key press to close the help modal and prevents body scroll when modal is open.
-     */
-    useEffect(() => {
-        if (isHelpModalOpen) {
-            // Prevent body scroll when modal is open
-            document.body.style.overflow = "hidden";
-
-            // Handle ESC key press
-            const handleEscape = (event) => {
-                if (event.key === "Escape") {
-                    setIsHelpModalOpen(false);
-                }
-            };
-
-            document.addEventListener("keydown", handleEscape);
-
-            return () => {
-                document.body.style.overflow = "";
-                document.removeEventListener("keydown", handleEscape);
-            };
-        }
-    }, [isHelpModalOpen]);
 
     /**
      * Submits the User Steam ID to the API route to check if the User Steam ID is valid.
@@ -151,10 +116,53 @@ export default function Landing() {
         }
     }
 
+    // Check if the page was referred
+    useEffect(() => {
+        if (window.location.hash === "#referred") {
+            setIsReferred(true);
+        }
+    }, []);
+
+    // Updates the validation state when user steamID changes.
+    useEffect(() => {
+        const validation = isValidUserSteamID(userSteamID);
+        setIsValidInput(validation);
+        // Clear error when input becomes valid
+        if (validation === true && error) {
+            setError(null);
+        }
+    }, [userSteamID]);
+
+    // Handles ESC key press to close the help modal and prevents body scroll when modal is open.
+    useEffect(() => {
+        if (isHelpModalOpen) {
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = "hidden";
+
+            // Handle ESC key press
+            const handleEscape = (event) => {
+                if (event.key === "Escape") {
+                    setIsHelpModalOpen(false);
+                }
+            };
+
+            document.addEventListener("keydown", handleEscape);
+
+            return () => {
+                document.body.style.overflow = "";
+                document.removeEventListener("keydown", handleEscape);
+            };
+        }
+    }, [isHelpModalOpen]);
+
     return (
         <Layout isLandingPage={true} swipeOut={swipeOut}>
             {/* User Steam ID Input */}
-            <Card className="space-y-6 animate-fade-in w-full max-w-2xl">
+            <Card
+                className={`space-y-6 w-full max-w-2xl ${
+                    isReferred ? "animate-swipe-in" : "animate-fade-in"
+                }`}
+            >
                 <div className="text-center space-y-2">
                     <h3 className="text-2xl font-semibold text-white">
                         Enter Your Steam Profile
