@@ -56,7 +56,7 @@ Low-effort hints that provide general information:
 - `first_letter`: First letter of the game title
   - Required data: `first_letter`
   
-- `developer_publisher`: Game creators information
+- `developer_publisher`: Game creators' information
   - Required data: `developer`, `publisher`
   
 - `tags`: Genre and category tags
