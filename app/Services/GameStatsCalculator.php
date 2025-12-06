@@ -12,7 +12,7 @@ class GameStatsCalculator
      * @param int $topN Number of top games to return
      * @return array All computed game statistics
      */
-    public function computeAll(array $games, int $topN = 5): array
+    public function computeAll(array $games, int $topN = 3): array
     {
         $total = $this->getGameCount($games);
         $totalPlaytime = $this->getTotalPlaytimeMinutes($games);
@@ -78,7 +78,7 @@ class GameStatsCalculator
      * @param int $topN
      * @return array
      */
-    public function getTopGames(array $games, int $topN = 5): array
+    public function getTopGames(array $games, int $topN = 3): array
     {
         usort($games, function ($a, $b) {
             return ((int) ($b['playtime_forever'] ?? 0)) <=> ((int) ($a['playtime_forever'] ?? 0));

@@ -26,7 +26,7 @@ class SteamStatsService
      * Compute statistics for a user's owned games.
      *
      * @param string $steamid Numeric SteamID
-     * @param int $topN Number of top games to return (defaults to 5)
+     * @param int $topN Number of top games to return (defaults to 3)
      * @return array{
      *   game_count:int,
      *   total_playtime_minutes:int,
