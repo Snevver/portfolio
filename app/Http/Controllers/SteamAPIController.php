@@ -68,7 +68,7 @@ class SteamAPIController extends Controller
 
                     if ($userSteamID && $isPublicProfile) {
                         try {
-                            $ownedStats = $stats->getOwnedGamesStats($userSteamID, 5);
+                            $ownedStats = $stats->getOwnedGamesStats($userSteamID, 3);
                             $timeCreated = $stats->getAccountAgeAndCreationDate($player['timecreated'] ?? null);
                             $personaState = $identity->getPersonaStateMeaning($player['personastate'] ?? 0);
 

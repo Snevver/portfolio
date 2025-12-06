@@ -29,14 +29,14 @@ class SteamStatsService
      * @param int $topN Number of top games to return (defaults to 5)
      * @return array{
      *   game_count:int,
-     *   game_ids:int[],
      *   total_playtime_minutes:int,
      *   average_playtime_minutes:int,
      *   top_games:array,
-     *   played_percentage:float
+     *   played_percentage:float,
+     *   all_games:array
      * }
      */
-    public function getOwnedGamesStats(string $steamid, int $topN = 5): array
+    public function getOwnedGamesStats(string $steamid, int $topN = 3): array
     {
         $data = $this->client->fetchOwnedGames($steamid);
         $games = $data['games'] ?? [];

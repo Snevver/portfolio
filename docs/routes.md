@@ -50,7 +50,7 @@ This document outlines the routes of the application. It can be used to easily f
 	- `timeCreated` (string|null) — formatted creation date (e.g., "January 1, 2001")
 	- `accountAge` (object|null) — breakdown of years/months/days (if available)
 	- `totalGamesOwned` (int)
-	- `gameIDsOwned` (array)
+	- `allGames` (array)
 	- `totalPlaytimeMinutes` (int)
 	- `averagePlaytimeMinutes` (int)
 	- `topGames` (array)

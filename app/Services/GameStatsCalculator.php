@@ -15,19 +15,19 @@ class GameStatsCalculator
     public function computeAll(array $games, int $topN = 5): array
     {
         $total = $this->getGameCount($games);
-        $ownedGameIDs = $this->getGameIds($games);
         $totalPlaytime = $this->getTotalPlaytimeMinutes($games);
         $average = $this->getAveragePlaytimeMinutes($games);
         $top = $this->getTopGames($games, $topN);
         $playedPercentage = $this->getPlayedPercentage($games);
+        $allGames = $this->getAllGamesWithNames($games);
 
         return [
             'game_count' => $total,
-            'game_ids' => $ownedGameIDs,
             'total_playtime_minutes' => $totalPlaytime,
             'average_playtime_minutes' => $average,
             'top_games' => $top,
             'played_percentage' => $playedPercentage,
+            'all_games' => $allGames,
         ];
     }
 
@@ -40,24 +40,6 @@ class GameStatsCalculator
     public function getGameCount(array $games): int
     {
         return count($games);
-    }
-
-    /**
-     * Extract appids from the raw games payload.
-     *
-     * @param array $games
-     * @return int[]
-     */
-    public function getGameIds(array $games): array
-    {
-        $ids = [];
-        foreach ($games as $game) {
-            if (isset($game['appid'])) {
-                $ids[] = (int) $game['appid'];
-            }
-        }
-
-        return $ids;
     }
 
     /**
@@ -138,5 +120,25 @@ class GameStatsCalculator
         }
 
         return round(($played / $total) * 100, 2);
+    }
+
+    /**
+     * Extract all games with their IDs and names.
+     *
+     * @param array $games
+     * @return array Array of games with 'appid' and 'name' keys
+     */
+    public function getAllGamesWithNames(array $games): array
+    {
+        $result = [];
+        foreach ($games as $game) {
+            $result[] = [
+                'appid' => $game['appid'] ?? null,
+                'name' => $game['name'] ?? null,
+                'cover_url' => "https://steamcdn-a.akamaihd.net/steam/apps/{$game['appid']}/capsule_616x353.jpg",
+            ];
+        }
+
+        return $result;
     }
 }

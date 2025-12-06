@@ -59,24 +59,6 @@ class GameStatsCalculatorTest extends TestCase
     }
 
     /**
-     * Tests if game IDs are extracted correctly, skipping invalid entries
-     * @return void
-     */
-    public function testGetGameIds(): void
-    {
-        $games = [
-            ['appid' => 10],
-            ['appid' => 20],
-            ['name' => null], // Missing appid - should be skipped (edge case)
-            ['appid' => 30],
-        ];
-
-        $result = $this->calculator->getGameIds($games);
-        
-        $this->assertEquals([10, 20, 30], $result);
-    }
-
-    /**
      * Tests if total playtime is summed correctly, skipping invalid entries
      * @return void
      */
