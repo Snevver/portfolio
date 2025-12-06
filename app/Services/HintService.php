@@ -57,14 +57,16 @@ class HintService
         foreach ($difficulties as $difficulty) {
             $hintsInDifficulty = array_filter($allHints, fn($hint) => $hint['difficulty'] === $difficulty);
 
-            if (!empty($hintsInDifficulty)) {
-                $randomHint = $hintsInDifficulty[array_rand($hintsInDifficulty)];
-
-                $hintsByDifficulty[$difficulty] = [
-                    'hint_name' => $randomHint['hint_name'],
-                    'needed_data_keys' => $randomHint['needed_data'],
-                ];
+            if (empty($hintsInDifficulty)) {
+                throw new \RuntimeException("No hints found for difficulty level: $difficulty");
             }
+
+            $randomHint = $hintsInDifficulty[array_rand($hintsInDifficulty)];
+            
+            $hintsByDifficulty[$difficulty] = [
+                'hint_name' => $randomHint['hint_name'],
+                'needed_data_keys' => $randomHint['needed_data'],
+            ];
         }
 
         return $hintsByDifficulty;

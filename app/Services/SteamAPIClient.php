@@ -152,6 +152,7 @@ class SteamAPIClient
     {
         try {
             $response = Http::timeout(10)
+                ->retry(2, 100)
                 ->get($this->playerCountEndpoint, [
                     'appid' => $appId,
                 ]);
@@ -180,6 +181,7 @@ class SteamAPIClient
     {
         try {
             $response = Http::timeout(10)
+                ->retry(2, 100)
                 ->get('https://steamspy.com/api.php', [
                     'request' => 'appdetails',
                     'appid' => $appId,
@@ -188,7 +190,7 @@ class SteamAPIClient
             if ($response->successful()) {
                 $data = $response->json();
                 // SteamSpy returns appid 0 for invalid/not found games
-                if (isset($data['appid']) && $data['appid'] == $appId) {
+                if (isset($data['appid']) && $data['appid'] === $appId) {
                     return $data;
                 }
             }

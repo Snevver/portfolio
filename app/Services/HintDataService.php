@@ -7,10 +7,11 @@ class HintDataService
     private SteamAPIClient $steamClient;
     private array $appDetailsCache = [];
     private array $steamSpyDataCache = [];
+    private array $currentPlayersCache = [];
 
-    public function __construct()
+    public function __construct(SteamAPIClient $steamClient)
     {
-        $this->steamClient = new SteamAPIClient();
+        $this->steamClient = $steamClient;
     }
 
     /**
@@ -27,7 +28,7 @@ class HintDataService
 
         // Check if the key is valid
         if (!isset($keyToMethod[$key])) {
-            throw new \Exception("Unknown data key: $key");
+            throw new \InvalidArgumentException("Unknown data key: $key");
         }
 
         $method = $keyToMethod[$key];
@@ -43,6 +44,9 @@ class HintDataService
     /**
      * Fetch app details from Steam Store API.
      * Results are cached within the request to avoid redundant API calls.
+     * 
+     * @param int $appId The Steam App ID
+     * @return array|null App details array or null on failure
      */
     private function getAppDetails(int $appId): ?array
     {
@@ -68,18 +72,23 @@ class HintDataService
 
     /**
      * Get the first letter of the game's name (uppercase).
+     * 
+     * @param array $gameData The game data array containing 'name'
+     * @return string The first letter of the game name in uppercase
      */
-    public function getFirstLetterOfGame(array $gameData): string
+    public function getFirstLetterOfGame(array $gameData): ?string
     {
-        return strtoupper(substr($gameData['name'], 0, 1));
+        $name = $gameData['name'] ?? null;
+        return $name ? strtoupper(substr($name, 0, 1)) : null;
     }
 
     /**
      * Get the game's name with letters randomly shuffled.
      */
-    public function getScrambledNameOfGame(array $gameData): string
+    public function getScrambledNameOfGame(array $gameData): ?string
     {
-        return str_shuffle($gameData['name']);
+        $name = $gameData['name'] ?? null;
+        return $name ? str_shuffle($name) : null;
     }
 
     /**
@@ -96,8 +105,11 @@ class HintDataService
     public function getDeveloperOfGame(array $gameData): ?string
     {
         $details = $this->getAppDetails($gameData['id']);
-        $developers = $details['developers'] ?? [];
+        if ($details === null) {
+            return null;
+        }
 
+        $developers = $details['developers'] ?? [];
         return !empty($developers) ? $developers[0] : null;
     }
 
@@ -196,16 +208,7 @@ class HintDataService
         $minimum = $pcReqs['minimum'] ?? '';
 
         if (!empty($minimum)) {
-            $patterns = [
-                '/Storage:\s*<\/strong>\s*([^<]+)/i',
-                '/Storage:\s*([^<]+)/i',
-                '/Hard Drive:\s*<\/strong>\s*([^<]+)/i',
-                '/Hard Drive:\s*([^<]+)/i',
-                '/Disk Space:\s*<\/strong>\s*([^<]+)/i',
-                '/Disk Space:\s*([^<]+)/i',
-                '/HDD:\s*<\/strong>\s*([^<]+)/i',
-                '/HDD:\s*([^<]+)/i',
-            ];
+            $patterns = config('hints.disk_space_patterns');
 
             foreach ($patterns as $pattern) {
                 if (preg_match($pattern, $minimum, $matches)) {
@@ -248,6 +251,16 @@ class HintDataService
      */
     public function getCurrentPlayersOfGame(array $gameData): int
     {
-        return $this->steamClient->fetchCurrentPlayers($gameData['id']) ?? 0;
+        $appId = $gameData['id'] ?? null;
+
+        if (empty($appId)) {
+            return 0;
+        }
+
+        if (!isset($this->currentPlayersCache[$appId])) {
+            $this->currentPlayersCache[$appId] = $this->steamClient->fetchCurrentPlayers($appId) ?? 0;
+        }
+
+        return $this->currentPlayersCache[$appId];
     }
 }
