@@ -24,7 +24,7 @@ class GameStatsCalculatorTest extends TestCase
     public function testGetGameCountWithEmptyArray(): void
     {
         $result = $this->calculator->getGameCount([]);
-        
+
         $this->assertEquals(0, $result);
     }
 
@@ -35,9 +35,9 @@ class GameStatsCalculatorTest extends TestCase
     public function testGetGameCountWithSingleGame(): void
     {
         $games = [['appid' => 1]];
-        
+
         $result = $this->calculator->getGameCount($games);
-        
+
         $this->assertEquals(1, $result);
     }
 
@@ -52,9 +52,9 @@ class GameStatsCalculatorTest extends TestCase
             ['appid' => 2],
             ['appid' => 3]
         ];
-        
+
         $result = $this->calculator->getGameCount($games);
-        
+
         $this->assertEquals(3, $result);
     }
 
@@ -72,7 +72,7 @@ class GameStatsCalculatorTest extends TestCase
         ];
 
         $result = $this->calculator->getTotalPlaytimeMinutes($games);
-        
+
         // 60 + 120 + 30 = 210
         $this->assertEquals(210, $result);
     }
@@ -84,7 +84,7 @@ class GameStatsCalculatorTest extends TestCase
     public function testGetAveragePlaytimeWithEmptyArray(): void
     {
         $result = $this->calculator->getAveragePlaytimeMinutes([]);
-        
+
         $this->assertEquals(0, $result);
     }
 
@@ -95,9 +95,9 @@ class GameStatsCalculatorTest extends TestCase
     public function testGetAveragePlaytimeWithSingleGame(): void
     {
         $games = [['playtime_forever' => 60]];
-        
+
         $result = $this->calculator->getAveragePlaytimeMinutes($games);
-        
+
         $this->assertEquals(60, $result);
     }
 
@@ -112,9 +112,9 @@ class GameStatsCalculatorTest extends TestCase
             ['playtime_forever' => 120],
             ['playtime_forever' => 30],
         ];
-        
+
         $result = $this->calculator->getAveragePlaytimeMinutes($games);
-        
+
         // (60 + 120 + 30) / 3 = 70
         $this->assertEquals(70, $result);
     }
@@ -137,7 +137,7 @@ class GameStatsCalculatorTest extends TestCase
 
         // Should return only 3 games
         $this->assertCount(3, $result);
-        
+
         // Should be sorted by playtime (highest first)
         $this->assertEquals(2, $result[0]['appid']); // Game B, 60 minutes
         $this->assertEquals(4, $result[1]['appid']); // Game D, 50 minutes
@@ -154,9 +154,9 @@ class GameStatsCalculatorTest extends TestCase
             ['playtime_forever' => 0],
             ['playtime_forever' => 0],
         ];
-        
+
         $result = $this->calculator->getPlayedPercentage($games);
-        
+
         $this->assertEquals(0.0, $result);
     }
 
@@ -170,9 +170,9 @@ class GameStatsCalculatorTest extends TestCase
             ['playtime_forever' => 10],
             ['playtime_forever' => 20],
         ];
-        
+
         $result = $this->calculator->getPlayedPercentage($games);
-        
+
         $this->assertEquals(100.0, $result);
     }
 
@@ -187,11 +187,11 @@ class GameStatsCalculatorTest extends TestCase
             ['playtime_forever' => 0],
             ['playtime_forever' => 20],
         ];
-        
+
         $result = $this->calculator->getPlayedPercentage($games);
-        
+
         // 2 out of 3 games played = 66.67%
-        $this->assertEquals(round((2/3) * 100, 2), $result);
+        $this->assertEquals(round((2 / 3) * 100, 2), $result);
     }
 
     /**
@@ -212,14 +212,57 @@ class GameStatsCalculatorTest extends TestCase
 
         // Check all the computed statistics
         $this->assertEquals(3, $result['game_count']);
-        $this->assertEquals([1, 2, 3], $result['game_ids']);
         $this->assertEquals(99, $result['total_playtime_minutes']);
         $this->assertEquals(33, $result['average_playtime_minutes']);
         $this->assertEquals(100.0, $result['played_percentage']);
-        
+
         // Check top games (should only return 2 as requested)
         $this->assertCount(2, $result['top_games']);
         $this->assertEquals(2, $result['top_games'][0]['appid']); // Game B has most playtime
         $this->assertEquals(1, $result['top_games'][1]['appid']); // Game A is second
+
+        // Check all games are included
+        $this->assertCount(3, $result['all_games']);
+        $this->assertEquals(1, $result['all_games'][0]['appid']);
+        $this->assertEquals('Game A', $result['all_games'][0]['name']);
+        $this->assertEquals(2, $result['all_games'][1]['appid']);
+        $this->assertEquals('Game B', $result['all_games'][1]['name']);
+    }
+
+    /**
+     * Test getAllGamesWithNames with various edge cases
+     * @return void
+     */
+    public function testGetAllGamesWithNames(): void
+    {
+        $games = [
+            ['appid' => 123, 'name' => 'Game One'],
+            ['appid' => 456, 'name' => 'Game Two'],
+            ['appid' => 789], // Missing name
+            ['name' => 'Game Four'], // Missing appid
+            [], // Empty game object
+        ];
+
+        $result = $this->calculator->getAllGamesWithNames($games);
+
+        // Should return all games, even with missing data
+        $this->assertCount(5, $result);
+
+        // Normal case with both appid and name
+        $this->assertEquals(123, $result[0]['appid']);
+        $this->assertEquals('Game One', $result[0]['name']);
+        $this->assertEquals('https://steamcdn-a.akamaihd.net/steam/apps/123/capsule_616x353.jpg', $result[0]['cover_url']);
+
+        // Missing name returns null for name
+        $this->assertEquals(789, $result[2]['appid']);
+        $this->assertNull($result[2]['name']);
+
+        // Missing appid returns null for appid
+        $this->assertNull($result[3]['appid']);
+        $this->assertEquals('Game Four', $result[3]['name']);
+
+        // Empty array
+        $emptyResult = $this->calculator->getAllGamesWithNames([]);
+        $this->assertEquals([], $emptyResult);
     }
 }

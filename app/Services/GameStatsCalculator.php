@@ -132,10 +132,11 @@ class GameStatsCalculator
     {
         $result = [];
         foreach ($games as $game) {
+            $appid = $game['appid'] ?? null;
             $result[] = [
-                'appid' => $game['appid'] ?? null,
+                'appid' => $appid,
                 'name' => $game['name'] ?? null,
-                'cover_url' => "https://steamcdn-a.akamaihd.net/steam/apps/{$game['appid']}/capsule_616x353.jpg",
+                'cover_url' => $appid ? "https://steamcdn-a.akamaihd.net/steam/apps/{$appid}/capsule_616x353.jpg" : null,
             ];
         }
 
