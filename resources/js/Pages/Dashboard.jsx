@@ -224,6 +224,21 @@ export default function Dashboard() {
                     })}
                 </div>
             </Card>
+
+            {/* Minigame grid */}
+            <Card className="flex flex-col w-full max-w-4xl mx-auto gap-6">
+                <div className="flex flex-col items-center">
+                    <h2 className="text-xl sm:text-3xl font-semibold text-white">
+                        Minigames
+                    </h2>
+
+                    <p className="text-xs sm:text-sm text-gray-400 mt-1">
+                        Choose which SteamGuessr minigame you want to play
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5"></div>
+            </Card>
         </Layout>
     );
 }
