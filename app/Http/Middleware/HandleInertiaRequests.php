@@ -41,11 +41,11 @@ class HandleInertiaRequests extends Middleware
                 'timeCreated' => session('timeCreated'),
                 'accountAge' => session('accountAge'),
                 'totalGamesOwned' => session('totalGamesOwned'),
-                'gameIDsOwned' => session('gameIDsOwned'),
                 'totalPlaytimeMinutes' => session('totalPlaytimeMinutes'),
                 'averagePlaytimeMinutes' => session('averagePlaytimeMinutes'),
                 'topGames' => session('topGames'),
                 'playedPercentage' => session('playedPercentage'),
+                'allGames' => session('allGames'),
             ],
         ];
     }

@@ -12,22 +12,22 @@ class GameStatsCalculator
      * @param int $topN Number of top games to return
      * @return array All computed game statistics
      */
-    public function computeAll(array $games, int $topN = 5): array
+    public function computeAll(array $games, int $topN = 3): array
     {
         $total = $this->getGameCount($games);
-        $ownedGameIDs = $this->getGameIds($games);
         $totalPlaytime = $this->getTotalPlaytimeMinutes($games);
         $average = $this->getAveragePlaytimeMinutes($games);
         $top = $this->getTopGames($games, $topN);
         $playedPercentage = $this->getPlayedPercentage($games);
+        $allGames = $this->getAllGamesWithNames($games);
 
         return [
             'game_count' => $total,
-            'game_ids' => $ownedGameIDs,
             'total_playtime_minutes' => $totalPlaytime,
             'average_playtime_minutes' => $average,
             'top_games' => $top,
             'played_percentage' => $playedPercentage,
+            'all_games' => $allGames,
         ];
     }
 
@@ -40,24 +40,6 @@ class GameStatsCalculator
     public function getGameCount(array $games): int
     {
         return count($games);
-    }
-
-    /**
-     * Extract appids from the raw games payload.
-     *
-     * @param array $games
-     * @return int[]
-     */
-    public function getGameIds(array $games): array
-    {
-        $ids = [];
-        foreach ($games as $game) {
-            if (isset($game['appid'])) {
-                $ids[] = (int) $game['appid'];
-            }
-        }
-
-        return $ids;
     }
 
     /**
@@ -96,7 +78,7 @@ class GameStatsCalculator
      * @param int $topN
      * @return array
      */
-    public function getTopGames(array $games, int $topN = 5): array
+    public function getTopGames(array $games, int $topN = 3): array
     {
         usort($games, function ($a, $b) {
             return ((int) ($b['playtime_forever'] ?? 0)) <=> ((int) ($a['playtime_forever'] ?? 0));
@@ -138,5 +120,26 @@ class GameStatsCalculator
         }
 
         return round(($played / $total) * 100, 2);
+    }
+
+    /**
+     * Extract all games with their IDs and names.
+     *
+     * @param array $games
+     * @return array Array of games with 'appid', 'name' and 'cover_url' keys
+     */
+    public function getAllGamesWithNames(array $games): array
+    {
+        $result = [];
+        foreach ($games as $game) {
+            $appid = $game['appid'] ?? null;
+            $result[] = [
+                'appid' => $appid,
+                'name' => $game['name'] ?? null,
+                'cover_url' => $appid ? "https://steamcdn-a.akamaihd.net/steam/apps/{$appid}/capsule_616x353.jpg" : null,
+            ];
+        }
+
+        return $result;
     }
 }

@@ -50,7 +50,11 @@ This document outlines the routes of the application. It can be used to easily f
 	- `timeCreated` (string|null) — formatted creation date (e.g., "January 1, 2001")
 	- `accountAge` (object|null) — breakdown of years/months/days (if available)
 	- `totalGamesOwned` (int)
-	- `gameIDsOwned` (array)
+	- `allGames` (array of objects)
+		- Each object has the following keys:
+			- `appid` (int) — the Steam App ID of the game
+			- `name` (string) — the name of the game
+			- `cover_url` (string|null) — URL to the game's cover image (may be null if unavailable)
 	- `totalPlaytimeMinutes` (int)
 	- `averagePlaytimeMinutes` (int)
 	- `topGames` (array)
