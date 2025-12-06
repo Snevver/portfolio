@@ -126,7 +126,7 @@ class GameStatsCalculator
      * Extract all games with their IDs and names.
      *
      * @param array $games
-     * @return array Array of games with 'appid' and 'name' keys
+     * @return array Array of games with 'appid', 'name' and 'cover_url' keys
      */
     public function getAllGamesWithNames(array $games): array
     {
