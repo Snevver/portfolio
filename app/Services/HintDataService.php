@@ -5,6 +5,8 @@ namespace App\Services;
 class HintDataService
 {
     private SteamAPIClient $steamClient;
+    private array $appDetailsCache = [];
+    private array $steamSpyDataCache = [];
 
     public function __construct()
     {
@@ -15,7 +17,7 @@ class HintDataService
      * Dynamically call the appropriate method based on the data key.
      *
      * @param string $key Key of the function that needs to be called
-     * @param array $gameData Containing appid, name, cover_url, playtime, etc.
+     * @param array $gameData Containing id, name, cover_url, playtime, etc.
      * @return mixed The requested data, or null if appId is required but missing
      */
     public function getDataByKey(string $key, array $gameData): mixed
@@ -31,7 +33,7 @@ class HintDataService
         $method = $keyToMethod[$key];
 
         // Check if method requires appId and it's missing
-        if (in_array($method, $requiresAppId) && empty($gameData['appid'])) {
+        if (in_array($method, $requiresAppId) && empty($gameData['id'])) {
             return null;
         }
 
@@ -40,18 +42,28 @@ class HintDataService
 
     /**
      * Fetch app details from Steam Store API.
+     * Results are cached within the request to avoid redundant API calls.
      */
     private function getAppDetails(int $appId): ?array
     {
-        return $this->steamClient->fetchAppDetails($appId);
+        if (!isset($this->appDetailsCache[$appId])) {
+            $this->appDetailsCache[$appId] = $this->steamClient->fetchAppDetails($appId);
+        }
+
+        return $this->appDetailsCache[$appId];
     }
 
     /**
      * Fetch SteamSpy data for owner counts and player stats.
+     * Results are cached within the request to avoid redundant API calls.
      */
     private function getSteamSpyData(int $appId): ?array
     {
-        return $this->steamClient->fetchSteamSpyData($appId);
+        if (!isset($this->steamSpyDataCache[$appId])) {
+            $this->steamSpyDataCache[$appId] = $this->steamClient->fetchSteamSpyData($appId);
+        }
+
+        return $this->steamSpyDataCache[$appId];
     }
 
     /**
@@ -65,7 +77,7 @@ class HintDataService
     /**
      * Get the game's name with letters randomly shuffled.
      */
-    public function getScramblednameOfGame(array $gameData): string
+    public function getScrambledNameOfGame(array $gameData): string
     {
         return str_shuffle($gameData['name']);
     }
@@ -83,7 +95,7 @@ class HintDataService
      */
     public function getDeveloperOfGame(array $gameData): ?string
     {
-        $details = $this->getAppDetails($gameData['appid']);
+        $details = $this->getAppDetails($gameData['id']);
         $developers = $details['developers'] ?? [];
 
         return !empty($developers) ? $developers[0] : null;
@@ -94,7 +106,7 @@ class HintDataService
      */
     public function getPublisherOfGame(array $gameData): ?string
     {
-        $details = $this->getAppDetails($gameData['appid']);
+        $details = $this->getAppDetails($gameData['id']);
         $publishers = $details['publishers'] ?? [];
 
         return !empty($publishers) ? $publishers[0] : null;
@@ -105,7 +117,7 @@ class HintDataService
      */
     public function getTagsOfGame(array $gameData): array
     {
-        $details = $this->getAppDetails($gameData['appid']);
+        $details = $this->getAppDetails($gameData['id']);
         $genres = $details['genres'] ?? [];
 
         return array_map(fn($genre) => $genre['description'], $genres);
@@ -124,7 +136,7 @@ class HintDataService
      */
     public function getReleaseDateOfGame(array $gameData): ?string
     {
-        $details = $this->getAppDetails($gameData['appid']);
+        $details = $this->getAppDetails($gameData['id']);
         return $details['release_date']['date'] ?? null;
     }
 
@@ -134,7 +146,7 @@ class HintDataService
      */
     public function getReviewRatioOfGame(array $gameData): ?string
     {
-        $steamSpyData = $this->getSteamSpyData($gameData['appid']);
+        $steamSpyData = $this->getSteamSpyData($gameData['id']);
 
         if ($steamSpyData) {
             $positive = $steamSpyData['positive'] ?? 0;
@@ -147,8 +159,8 @@ class HintDataService
         }
 
         // Fallback to Metacritic score
-        $details = $this->getAppDetails($gameData['appid']);
-        return isset($details['metacritic']['score']) ? (string) $details['metacritic']['score'] : null;
+        $details = $this->getAppDetails($gameData['id']);
+        return isset($details['metacritic']['score']) ? $details['metacritic']['score'] . '%' : null;
     }
 
     /**
@@ -156,7 +168,7 @@ class HintDataService
      */
     public function getTotalReviewsOfGame(array $gameData): int
     {
-        $steamSpyData = $this->getSteamSpyData($gameData['appid']);
+        $steamSpyData = $this->getSteamSpyData($gameData['id']);
 
         if ($steamSpyData) {
             $positive = $steamSpyData['positive'] ?? 0;
@@ -165,7 +177,7 @@ class HintDataService
         }
 
         // Fallback to Steam Store API
-        $details = $this->getAppDetails($gameData['appid']);
+        $details = $this->getAppDetails($gameData['id']);
         return $details['recommendations']['total'] ?? 0;
     }
 
@@ -174,7 +186,7 @@ class HintDataService
      */
     public function getRequiredDiskSpaceOfGame(array $gameData): ?string
     {
-        $details = $this->getAppDetails($gameData['appid']);
+        $details = $this->getAppDetails($gameData['id']);
         $pcReqs = $details['pc_requirements'] ?? [];
 
         if (empty($pcReqs) || !is_array($pcReqs)) {
@@ -226,7 +238,7 @@ class HintDataService
      */
     public function getTotalOwnersOfGame(array $gameData): ?string
     {
-        $steamSpyData = $this->getSteamSpyData($gameData['appid']);
+        $steamSpyData = $this->getSteamSpyData($gameData['id']);
 
         return $steamSpyData['owners'] ?? null;
     }
@@ -236,6 +248,6 @@ class HintDataService
      */
     public function getCurrentPlayersOfGame(array $gameData): int
     {
-        return $this->steamClient->fetchCurrentPlayers($gameData['appid']) ?? 0;
+        return $this->steamClient->fetchCurrentPlayers($gameData['id']) ?? 0;
     }
 }

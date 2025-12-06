@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\File;
 class HintService
 {
     public function __construct(
-        private HintDataService $dataService = new HintDataService()
+        private HintDataService $dataService
     ) {}
 
     /**
@@ -17,10 +17,26 @@ class HintService
      * randomly from each difficulty (easy, medium, hard).
      *
      * @return array<string, array{hint_name: string, needed_data_keys: array}>
+     * @throws \RuntimeException If hints.json is missing or contains invalid JSON
      */
     public function getRandomHints(): array
     {
-        $hints = json_decode(File::get(base_path('registry/hints.json')), true);
+        $hintsPath = base_path('registry/hints.json');
+
+        if (!File::exists($hintsPath)) {
+            throw new \RuntimeException('Hints configuration file not found: registry/hints.json');
+        }
+
+        $hintsContent = File::get($hintsPath);
+        $hints = json_decode($hintsContent, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException('Invalid JSON in hints.json: ' . json_last_error_msg());
+        }
+
+        if (!isset($hints['hints']) || !is_array($hints['hints'])) {
+            throw new \RuntimeException('Invalid hints.json structure: missing or invalid "hints" key');
+        }
 
         // Get all hints from all difficulties
         $allHints = [];

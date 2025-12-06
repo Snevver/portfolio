@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\HintService;
+use Illuminate\Http\JsonResponse;
 
 class ClassicGamemodeController extends Controller
 {
@@ -13,12 +14,12 @@ class ClassicGamemodeController extends Controller
     /**
      * Get a random game and its hints for the classic gamemode.
      */
-    public function index(): array
+    public function index(): JsonResponse
     {
         $allGames = session('allGames', []);
 
         if (empty($allGames)) {
-            return ['error' => 'No games found in session'];
+            return response()->json(['error' => 'No games found in session'], 404);
         }
 
         // Get random game from session
@@ -28,6 +29,6 @@ class ClassicGamemodeController extends Controller
         $hints = $this->hintService->getRandomHints();
 
         // Fetch data for those hints
-        return $this->hintService->getDataForHints($hints, $randomGame);
+        return response()->json($this->hintService->getDataForHints($hints, $randomGame));
     }
 }
