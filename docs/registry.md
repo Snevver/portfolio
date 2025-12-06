@@ -90,7 +90,7 @@ Challenging hints that require deeper knowledge:
   - Required data: `last_played`
   
 - `player_counts`: Player statistics
-  - Required data: `total_owners`, `current_players`, `peak_24h`
+  - Required data: `total_owners`, `current_players`
 
 ### Benefits
 
