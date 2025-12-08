@@ -18,6 +18,50 @@ This document outlines the routes of the application. It can be used to easily f
 
 ---
 
+- **POST /api/classic**
+	- **Purpose:** Get a random game from the user's library with hints for the Classic gamemode. This route is protected by the `steam.auth` middleware.
+	- **Parameters:** None (standard POST)
+	- **Response (JSON body):** Returns hints organized by difficulty level (easy, medium, hard), each containing the hint name, required data keys, and fetched data.
+	- **Example Response:**
+	```json
+	{
+		"easy": {
+			"hint_name": "first_letter",
+			"needed_data_keys": ["first_letter"],
+			"data": {
+				"first_letter": "H"
+			}
+		},
+		"medium": {
+			"hint_name": "release_date",
+			"needed_data_keys": ["release_date"],
+			"data": {
+				"release_date": "Nov 16, 2011"
+			}
+		},
+		"hard": {
+			"hint_name": "reviews",
+			"needed_data_keys": ["review_ratio", "total_reviews"],
+			"data": {
+				"review_ratio": "94.2%",
+				"total_reviews": 512847
+			}
+		}
+	}
+	```
+	- **Error Response:** If no games are found in the session:
+	```json
+	{
+		"error": "No games found in session"
+	}
+	```
+	- **Notes:** 
+		- One random hint is selected per difficulty level
+		- The game being guessed is selected randomly from `session('allGames')`
+		- Hint data is fetched from Steam Store API and SteamSpy API as needed
+
+---
+
 - **POST /initiate-user**
 	- **Purpose:** Validate whether a Steam user exists for a provided Steam profile input and store minimal user/session data.
 	- **Request (JSON body):**
@@ -52,11 +96,13 @@ This document outlines the routes of the application. It can be used to easily f
 	- `totalGamesOwned` (int)
 	- `allGames` (array of objects)
 		- Each object has the following keys:
-			- `appid` (int) — the Steam App ID of the game
+			- `id` (int) — the Steam App ID of the game
 			- `name` (string) — the name of the game
 			- `cover_url` (string|null) — URL to the game's cover image (may be null if unavailable)
+			- `playtime` (int) — total playtime in minutes
+			- `last_played` (int|null) — Unix timestamp of when the game was last played (null if never played)
 	- `totalPlaytimeMinutes` (int)
 	- `averagePlaytimeMinutes` (int)
 	- `topGames` (array)
-	- `playedPercentage` (float 0..1)
+	- `playedPercentage` (float 0..100)
 	- Frontend components can access these values through `usePage().props.steam` (Inertia).

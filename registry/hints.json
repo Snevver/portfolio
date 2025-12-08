@@ -38,7 +38,7 @@
         "neededData": ["last_played"]
       },
       "player_counts": {
-        "neededData": ["total_owners", "current_players", "peak_24h"]
+        "neededData": ["total_owners", "current_players"]
       }
     }
   }

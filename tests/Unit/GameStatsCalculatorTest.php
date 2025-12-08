@@ -223,9 +223,9 @@ class GameStatsCalculatorTest extends TestCase
 
         // Check all games are included
         $this->assertCount(3, $result['all_games']);
-        $this->assertEquals(1, $result['all_games'][0]['appid']);
+        $this->assertEquals(1, $result['all_games'][0]['id']);
         $this->assertEquals('Game A', $result['all_games'][0]['name']);
-        $this->assertEquals(2, $result['all_games'][1]['appid']);
+        $this->assertEquals(2, $result['all_games'][1]['id']);
         $this->assertEquals('Game B', $result['all_games'][1]['name']);
     }
 
@@ -236,7 +236,7 @@ class GameStatsCalculatorTest extends TestCase
     public function testGetAllGamesWithNames(): void
     {
         $games = [
-            ['appid' => 123, 'name' => 'Game One'],
+            ['appid' => 123, 'name' => 'Game One', 'playtime_forever' => 120, 'rtime_last_played' => 1701864000],
             ['appid' => 456, 'name' => 'Game Two'],
             ['appid' => 789], // Missing name
             ['name' => 'Game Four'], // Missing appid
@@ -249,16 +249,22 @@ class GameStatsCalculatorTest extends TestCase
         $this->assertCount(5, $result);
 
         // Normal case with both appid and name
-        $this->assertEquals(123, $result[0]['appid']);
+        $this->assertEquals(123, $result[0]['id']);
         $this->assertEquals('Game One', $result[0]['name']);
         $this->assertEquals('https://steamcdn-a.akamaihd.net/steam/apps/123/capsule_616x353.jpg', $result[0]['cover_url']);
+        $this->assertEquals(120, $result[0]['playtime']);
+        $this->assertEquals(1701864000, $result[0]['last_played']);
+
+        // Missing playtime defaults to 0
+        $this->assertEquals(0, $result[1]['playtime']);
+        $this->assertNull($result[1]['last_played']);
 
         // Missing name returns null for name
-        $this->assertEquals(789, $result[2]['appid']);
+        $this->assertEquals(789, $result[2]['id']);
         $this->assertNull($result[2]['name']);
 
-        // Missing appid returns null for appid
-        $this->assertNull($result[3]['appid']);
+        // Missing appid returns null for id
+        $this->assertNull($result[3]['id']);
         $this->assertEquals('Game Four', $result[3]['name']);
 
         // Empty array
