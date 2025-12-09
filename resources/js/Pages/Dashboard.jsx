@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { usePage } from "@inertiajs/react";
 import CountUp from "react-countup";
+import { ArrowUpDown, ALargeSmall } from "lucide-react";
 import Layout from "../Layouts/Layout";
 import Card from "../Components/Card";
+import MinigameCard from "../Components/MinigameCard";
 
 export default function Dashboard() {
     const { steam } = usePage().props;
@@ -237,7 +239,25 @@ export default function Dashboard() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5"></div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                    <MinigameCard
+                        useLogo={true}
+                        title="SteamGuessr Classic"
+                        description="Guess the game from its statistics"
+                    />
+                    <MinigameCard
+                        icon={ArrowUpDown}
+                        title="Higher or Lower"
+                        description="Guess which game statistic is higher"
+                        disabled={true}
+                    />
+                    <MinigameCard
+                        icon={ALargeSmall}
+                        title="Game Wordle"
+                        description="Wordle, but with games"
+                        disabled={true}
+                    />
+                </div>
             </Card>
         </Layout>
     );
