@@ -35,6 +35,7 @@ class ClassicGamemodeController extends Controller
             $gameInfo = [
                 'id' => $randomGame['id'] ?? $randomGame['appid'] ?? null,
                 'name' => $randomGame['name'] ?? null,
+                'cover_url' => $randomGame['cover_url'] ?? null,
             ];
 
             // Return the hints, the data for those hints and the correct game info as JSON
