@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "./Card";
-import { CircleQuestionMark } from "lucide-react";
+import { CircleQuestionMark, Hammer } from "lucide-react";
 
 export default function MinigameCard({
     useLogo = false,
@@ -15,10 +15,18 @@ export default function MinigameCard({
     return (
         <a>
             <Card
-                className="flex flex-col gap-1 bg-gray-900/50 border-gray-700/70 hover:bg-gray-900/70 hover:cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                className={`relative flex flex-col gap-1 bg-gray-900/50 border-gray-700/70 transition-all duration-200 ${
+                    disabled
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer hover:bg-gray-900/70 hover:scale-[1.02] active:scale-[0.98]"
+                }`}
                 {...props}
             >
-                <div className="flex items-center gap-3">
+                <div
+                    className={`flex items-center gap-3 ${
+                        disabled ? "blur-sm" : ""
+                    }`}
+                >
                     {useLogo && (
                         <img
                             src="/images/logo-white.png"
@@ -33,7 +41,20 @@ export default function MinigameCard({
                     </h1>
                 </div>
 
-                <p className="text-sm text-gray-400">{description}</p>
+                <p
+                    className={`text-sm text-gray-400 ${
+                        disabled ? "blur-sm" : ""
+                    }`}
+                >
+                    {description}
+                </p>
+
+                {disabled && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 rounded-xl z-10">
+                        <Hammer className="w-4 h-4 mb-2 text-white" />
+                        <p className="text-sm text-white">Coming soon...</p>
+                    </div>
+                )}
             </Card>
         </a>
     );
