@@ -23,12 +23,14 @@ export default function MinigameCard({
                         <img
                             src="/images/logo-white.png"
                             alt={`${title} logo`}
-                            className="text-2xl w-[1em] h-[1em]"
+                            className="w-6 h-6"
                         />
                     )}
 
                     {!useLogo && <IconComponent className="text-2xl" />}
-                    <h1 className="text-2xl font-semibold text-white">{title}</h1>
+                    <h1 className="text-2xl font-semibold text-white">
+                        {title}
+                    </h1>
                 </div>
 
                 <p className="text-sm text-gray-400">{description}</p>
