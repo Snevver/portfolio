@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { usePage } from "@inertiajs/react";
 import CountUp from "react-countup";
+import { ArrowUpDown, ALargeSmall } from "lucide-react";
 import Layout from "../Layouts/Layout";
 import Card from "../Components/Card";
+import MinigameCard from "../Components/MinigameCard";
 
 export default function Dashboard() {
     const { steam } = usePage().props;
@@ -222,6 +224,39 @@ export default function Dashboard() {
                             </Card>
                         );
                     })}
+                </div>
+            </Card>
+
+            {/* Minigame grid */}
+            <Card className="flex flex-col w-full max-w-4xl mx-auto gap-6">
+                <div className="flex flex-col items-center">
+                    <h2 className="text-xl sm:text-3xl font-semibold text-white">
+                        Minigames
+                    </h2>
+
+                    <p className="text-xs sm:text-sm text-gray-400 mt-1">
+                        Choose which SteamGuessr minigame you want to play
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <MinigameCard
+                        useLogo={true}
+                        title="SteamGuessr Classic"
+                        description="Guess the game from its statistics"
+                    />
+                    <MinigameCard
+                        icon={ArrowUpDown}
+                        title="Higher or Lower"
+                        description="Guess which game statistic is higher"
+                        disabled={true}
+                    />
+                    <MinigameCard
+                        icon={ALargeSmall}
+                        title="Game Wordle"
+                        description="Wordle, but with games"
+                        disabled={true}
+                    />
                 </div>
             </Card>
         </Layout>
