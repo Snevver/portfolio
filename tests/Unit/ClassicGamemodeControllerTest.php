@@ -3,7 +3,8 @@
 namespace Tests\Unit;
 
 use App\Http\Controllers\ClassicGamemodeController;
-use App\Services\HintService;
+use App\Services\Hints\HintService;
+use App\Services\Game\ValidGameService;
 use Illuminate\Http\JsonResponse;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +17,7 @@ class ClassicGamemodeControllerTest extends TestCase
     public function testIndexReturnsHintsForValidSession(): void
     {
         $games = [
-            ['id' => 123, 'name' => 'Test Game', 'cover_url' => '', 'playtime' => 0],
+            ['id' => 123, 'name' => 'Test Game'],
         ];
 
         $hints = ['easy' => ['hint_name' => 'foo', 'needed_data_keys' => []]];
@@ -26,26 +27,25 @@ class ClassicGamemodeControllerTest extends TestCase
         $hintServiceMock->method('getRandomHints')->willReturn($hints);
         $hintServiceMock->method('getDataForHints')->with($hints, $games[0])->willReturn($dataForHints);
 
-        // Create a small test double to override session access and inject games
-        $controller = new class($hintServiceMock, $games) extends ClassicGamemodeController {
-            private array $gamesOverride;
+        $validGameServiceMock = $this->createMock(ValidGameService::class);
+        $validGameServiceMock->method('getValidGamesFromSession')->willReturn($games);
 
-            public function __construct(HintService $hintService, array $games)
-            {
-                parent::__construct($hintService);
-                $this->gamesOverride = $games;
-            }
-
-            protected function getAllGamesFromSession(): array
-            {
-                return $this->gamesOverride;
-            }
-        };
+        $controller = new ClassicGamemodeController($hintServiceMock, $validGameServiceMock);
 
         $response = $controller->index();
 
         $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($dataForHints, $response->getData(true));
+
+        $expected = [
+            'hints' => $hints,
+            'hints_data' => $dataForHints,
+            'game' => [
+                'id' => 123,
+                'name' => 'Test Game',
+            ],
+        ];
+
+        $this->assertEquals($expected, $response->getData(true));
     }
 
     /**
@@ -55,23 +55,15 @@ class ClassicGamemodeControllerTest extends TestCase
     public function testIndexReturns404WhenSessionEmpty(): void
     {
         $hintServiceMock = $this->createMock(HintService::class);
+        $validGameServiceMock = $this->createMock(ValidGameService::class);
+        $validGameServiceMock->method('getValidGamesFromSession')->willReturn([]);
 
-        $controller = new class($hintServiceMock) extends ClassicGamemodeController {
-            public function __construct(HintService $hintService)
-            {
-                parent::__construct($hintService);
-            }
-
-            protected function getAllGamesFromSession(): array
-            {
-                return [];
-            }
-        };
+        $controller = new ClassicGamemodeController($hintServiceMock, $validGameServiceMock);
 
         $response = $controller->index();
 
         $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals(['error' => 'No games found in session'], $response->getData(true));
+        $this->assertEquals(['error' => 'No valid games found in session'], $response->getData(true));
         $this->assertEquals(404, $response->getStatusCode());
     }
 
@@ -82,21 +74,10 @@ class ClassicGamemodeControllerTest extends TestCase
     public function testIndexReturns404WhenNoValidGames(): void
     {
         $hintServiceMock = $this->createMock(HintService::class);
+        $validGameServiceMock = $this->createMock(ValidGameService::class);
+        $validGameServiceMock->method('getValidGamesFromSession')->willReturn([]);
 
-        $controller = new class($hintServiceMock) extends ClassicGamemodeController {
-            public function __construct(HintService $hintService)
-            {
-                parent::__construct($hintService);
-            }
-
-            protected function getAllGamesFromSession(): array
-            {
-                return [
-                    ['id' => null, 'name' => null],
-                    ['id' => '', 'name' => ''],
-                ];
-            }
-        };
+        $controller = new ClassicGamemodeController($hintServiceMock, $validGameServiceMock);
 
         $response = $controller->index();
 

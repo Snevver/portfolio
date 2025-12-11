@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use App\Services\ValidationResponse;
+use App\Services\Validation\ValidationResponse;
 
 class ValidationResponseTest extends TestCase
 {

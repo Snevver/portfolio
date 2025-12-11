@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Services\SteamAPIClient;
-use App\Services\SteamIdentityService;
+use App\Services\Steam\SteamAPIClient;
+use App\Services\Steam\SteamIdentityService;
 use PHPUnit\Framework\TestCase;
 
 class SteamIdentityServiceTest extends TestCase

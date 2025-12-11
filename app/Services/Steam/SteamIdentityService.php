@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Services;
-
-use Illuminate\Support\Facades\Log;
+namespace App\Services\Steam;
 
 class SteamIdentityService
 {

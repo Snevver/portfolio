@@ -21,44 +21,46 @@ This document outlines the routes of the application. It can be used to easily f
 - **POST /api/classic**
 	- **Purpose:** Get a random game from the user's library with hints for the Classic gamemode. This route is protected by the `steam.auth` middleware.
 	- **Parameters:** None (standard POST)
-	- **Response (JSON body):** Returns hints organized by difficulty level (easy, medium, hard), each containing the hint name, required data keys, and fetched data.
-	- **Example Response:**
-	```json
-	{
-		"easy": {
-			"hint_name": "first_letter",
-			"needed_data_keys": ["first_letter"],
-			"data": {
-				"first_letter": "H"
-			}
-		},
-		"medium": {
-			"hint_name": "release_date",
-			"needed_data_keys": ["release_date"],
-			"data": {
-				"release_date": "Nov 16, 2011"
-			}
-		},
-		"hard": {
-			"hint_name": "reviews",
-			"needed_data_keys": ["review_ratio", "total_reviews"],
-			"data": {
-				"review_ratio": "94.2%",
-				"total_reviews": 512847
+		- **Response (JSON body):** Returns a payload with three top-level keys:
+			- `hints_data` — the fetched data for each selected hint keyed by difficulty. Each entry contains `hint_name`, `needed_data_keys` and `data` (map of key => value).
+			- `game` — the normalized game object that the hints correspond to: `{ id, name, cover_url, playtime, last_played }`.
+		- **Example Response:**
+		```json
+		{
+			"hints_data": {
+				"easy": {
+					"hint_name": "first_letter",
+					"needed_data_keys": ["name_first_letter"],
+					"data": { "name_first_letter": "G" }
+				},
+				"medium": {
+					"hint_name": "release_year",
+					"needed_data_keys": ["release_year"],
+					"data": { "release_year": 2019 }
+				},
+				"hard": {
+					"hint_name": "player_count",
+					"needed_data_keys": ["current_players"],
+					"data": { "current_players": 3421 }
+				}
+			},
+			"game": {
+				"id": 12345,
+				"name": "Great Game",
+				"cover_url": "https://steamcdn-a.akamaihd.net/steam/apps/12345/capsule_616x353.jpg",
 			}
 		}
-	}
-	```
-	- **Error Response:** If no games are found in the session:
-	```json
-	{
-		"error": "No games found in session"
-	}
-	```
-	- **Notes:** 
-		- One random hint is selected per difficulty level
-		- The game being guessed is selected randomly from `session('allGames')`
-		- Hint data is fetched from Steam Store API and SteamSpy API as needed
+		```
+		- **Error Response:** If no valid games are found in the session:
+		```json
+		{
+			"error": "No valid games found in session"
+		}
+		```
+		- **Notes:**
+			- One random hint is selected per difficulty level.
+			- The game being guessed is selected randomly from `session('allGames')` via the `ValidGameService`.
+			- Hint data may be fetched from the Steam Store API, SteamSpy API, or other services as needed.
 
 ---
 

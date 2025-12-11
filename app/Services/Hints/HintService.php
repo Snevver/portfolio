@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Hints;
 
 use Illuminate\Support\Facades\File;
 
