@@ -21,7 +21,7 @@ export default function MinigameCard({
                 {useLogo && (
                     <img
                         src="/images/logo-white.png"
-                        alt="Logo"
+                        alt={`${title} logo`}
                         className="text-2xl w-[1em] h-[1em]"
                     />
                 )}
