@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\HintService;
+use App\Services\Hints\HintService;
+use App\Services\Game\ValidGameService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class ClassicGamemodeController extends Controller
 {
     public function __construct(
-        private HintService $hintService
+        private HintService $hintService,
+        private ValidGameService $validGameService
     ) {}
 
     /**
@@ -16,34 +19,34 @@ class ClassicGamemodeController extends Controller
      */
     public function index(): JsonResponse
     {
-        $allGames = $this->getAllGamesFromSession();
+        try {
+            // Get all valid games from session
+            $validGames = $this->validGameService->getValidGamesFromSession();
 
-        if (empty($allGames)) {
-            return new JsonResponse(['error' => 'No games found in session'], 404);
+            // If no valid games, return 404
+            if (empty($validGames)) return new JsonResponse(['error' => 'No valid games found in session'], Response::HTTP_NOT_FOUND);
+
+            // Pick a random game, get hints and get data for those hints
+            $randomGame = $validGames[array_rand($validGames)];
+            $hints = $this->hintService->getRandomHints();
+            $hintsWithData = $this->hintService->getDataForHints($hints, $randomGame);
+
+            // Get info of the random game
+            $gameInfo = [
+                'id' => $randomGame['id'] ?? $randomGame['appid'] ?? null,
+                'name' => $randomGame['name'] ?? null,
+            ];
+
+            // Return the hints, the data for those hints and the correct game info as JSON
+            $payload = [
+                'hints_data' => $hintsWithData,
+                'game' => $gameInfo,
+            ];
+
+            return new JsonResponse($payload, Response::HTTP_OK);
+        } catch (\Throwable $e) {
+            error_log('ClassicGamemodeController@index error: ' . $e->getMessage());
+            return new JsonResponse(['error' => 'Failed to prepare classic gamemode'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        // Filter games to only those with valid id and name
-        $validGames = array_filter($allGames, fn($game) => !empty($game['id']) && !empty($game['name']));
-
-        if (empty($validGames)) {
-            return new JsonResponse(['error' => 'No valid games found in session'], 404);
-        }
-
-        // Get random valid game from session
-        $randomGame = $validGames[array_rand($validGames)];
-
-        // Get random hints (one per difficulty)
-        $hints = $this->hintService->getRandomHints();
-
-        // Fetch data for those hints
-        return new JsonResponse($this->hintService->getDataForHints($hints, $randomGame));
-    }
-
-    /**
-     * Wrapper for fetching games from session so it can be overridden in tests.
-     */
-    protected function getAllGamesFromSession(): array
-    {
-        return session('allGames', []);
     }
 }

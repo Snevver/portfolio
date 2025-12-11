@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\SteamAPIClient;
-use App\Services\SteamIdentityService;
-use App\Services\SteamStatsService;
-use App\Services\UserSessionService;
-use App\Services\ValidationResponse;
+use App\Services\Steam\SteamAPIClient;
+use App\Services\Steam\SteamIdentityService;
+use App\Services\Steam\SteamStatsService;
+use App\Services\Session\UserSessionService;
+use App\Services\Validation\ValidationResponse;
 use Illuminate\Support\Facades\Log;
 
 class SteamAPIController extends Controller

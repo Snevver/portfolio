@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Hints;
+
+use App\Services\Steam\SteamAPIClient;
 
 class HintDataService
 {
@@ -24,7 +26,6 @@ class HintDataService
     public function getDataByKey(string $key, array $gameData): mixed
     {
         $keyToMethod = config('hints.key_to_method');
-        $requiresAppId = config('hints.requires_app_id');
 
         // Check if the key is valid
         if (!isset($keyToMethod[$key])) {
@@ -32,11 +33,6 @@ class HintDataService
         }
 
         $method = $keyToMethod[$key];
-
-        // Check if method requires appId and it's missing
-        if (in_array($method, $requiresAppId) && empty($gameData['id'])) {
-            return null;
-        }
 
         return $this->$method($gameData);
     }
