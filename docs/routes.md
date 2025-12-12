@@ -106,3 +106,10 @@ This document outlines the routes of the application. It can be used to easily f
 	- `topGames` (array)
 	- `playedPercentage` (float 0..100)
 	- Frontend components can access these values through `usePage().props.steam` (Inertia).
+
+- **GET /admin**
+  - **Purpose:** This endpoint is an easteregg. The following endpoints also redirect to /admin:
+    - /login
+    - /profile
+    - /settings
+    - /account
