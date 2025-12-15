@@ -1,4 +1,5 @@
 import React from "react";
+import { router } from "@inertiajs/react";
 import Card from "./Card";
 import { CircleQuestionMark, Hammer } from "lucide-react";
 
@@ -8,12 +9,28 @@ export default function MinigameCard({
     title = "Error",
     description = "Error",
     disabled = false,
+    href = "/",
+    onNavigate,
     ...props
 }) {
     const IconComponent = icon;
 
+    const handleClick = (event) => {
+        event.preventDefault();
+
+        if (disabled) {
+            return;
+        }
+
+        if (onNavigate) {
+            onNavigate(href);
+        } else {
+            router.visit(href);
+        }
+    };
+
     return (
-        <a>
+        <a href={href} onClick={handleClick} aria-disabled={disabled}>
             <Card
                 className={`relative flex flex-col gap-1 bg-gray-900/50 border-gray-700/70 transition-all duration-200 ${
                     disabled

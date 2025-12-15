@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { usePage } from "@inertiajs/react";
+import React, { useEffect, useState } from "react";
+import { router, usePage } from "@inertiajs/react";
 import CountUp from "react-countup";
 import { ArrowUpDown, ALargeSmall } from "lucide-react";
 import Layout from "../Layouts/Layout";
@@ -8,6 +8,7 @@ import MinigameCard from "../Components/MinigameCard";
 
 export default function Dashboard() {
     const { steam } = usePage().props;
+    const [swipeOut, setSwipeOut] = useState(false);
 
     // !!! Debugging. Remove before deployment.
     useEffect(() => {
@@ -39,8 +40,16 @@ export default function Dashboard() {
         personaStateClasses[steam.personaState] ||
         "bg-blue-500/10 text-blue-300 border-blue-500/30";
 
+    const handleMinigameNavigation = (href) => {
+        setSwipeOut(true);
+
+        setTimeout(() => {
+            router.visit(href);
+        }, 300);
+    };
+
     return (
-        <Layout>
+        <Layout swipeOut={swipeOut}>
             <Card className="flex flex-col w-full max-w-4xl mx-auto gap-8">
                 {/* Profile header */}
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
@@ -244,6 +253,8 @@ export default function Dashboard() {
                         useLogo={true}
                         title="SteamGuessr Classic"
                         description="Guess the game from its statistics"
+                        href="/classic"
+                        onNavigate={handleMinigameNavigation}
                     />
                     <MinigameCard
                         icon={ArrowUpDown}

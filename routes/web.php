@@ -15,6 +15,10 @@ Route::middleware('steam.auth')->group(function () {
         return Inertia::render('Dashboard');
     });
 
+    Route::get('/classic', function () {
+        return Inertia::render('Classic');
+    });
+
     Route::post('/api/classic', [ClassicGamemodeController::class, 'index']);
 });
 
