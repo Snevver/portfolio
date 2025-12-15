@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Services\GameStatsCalculator;
+use App\Services\Game\GameStatsCalculator;
 use PHPUnit\Framework\TestCase;
 
 class GameStatsCalculatorTest extends TestCase

@@ -3,9 +3,9 @@
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use App\Services\SteamStatsService;
-use App\Services\GameStatsCalculator;
-use App\Services\SteamAPIClient;
+use App\Services\Steam\SteamStatsService;
+use App\Services\Game\GameStatsCalculator;
+use App\Services\Steam\SteamAPIClient;
 use Carbon\Carbon;
 
 class SteamStatsServiceTest extends TestCase

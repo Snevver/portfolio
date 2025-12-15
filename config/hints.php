@@ -47,29 +47,4 @@ return [
         '/HDD:\s*<\/strong>\s*([^<]+)/i',
         '/HDD:\s*([^<]+)/i',
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Methods Requiring App ID
-    |--------------------------------------------------------------------------
-    |
-    | Methods that require a Steam app ID to function. If the app ID is missing,
-    | these methods will return null instead of being called.
-    |
-    | NOTE: These method names must match exactly with the method names in
-    | HintDataService. If you rename a method in HintDataService, update this
-    | array accordingly.
-    |
-    */
-    'requires_app_id' => [
-        'getDeveloperOfGame',
-        'getPublisherOfGame',
-        'getTagsOfGame',
-        'getReleaseDateOfGame',
-        'getReviewRatioOfGame',
-        'getTotalReviewsOfGame',
-        'getRequiredDiskSpaceOfGame',
-        'getTotalOwnersOfGame',
-        'getCurrentPlayersOfGame',
-    ],
 ];

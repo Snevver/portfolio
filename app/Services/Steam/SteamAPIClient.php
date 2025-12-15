@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Steam;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +13,7 @@ class SteamAPIClient
     private string $storeApiEndpoint = 'https://store.steampowered.com/api/appdetails';
     private string $playerCountEndpoint = 'https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/';
     private string $apiKey;
+    private const STEAMSPY_ENDPOINT = 'https://steamspy.com/api.php';
 
     /**
      * Create a new SteamAPIClient.
@@ -182,7 +183,7 @@ class SteamAPIClient
         try {
             $response = Http::timeout(10)
                 ->retry(2, 100)
-                ->get('https://steamspy.com/api.php', [
+                ->get(self::STEAMSPY_ENDPOINT, [
                     'request' => 'appdetails',
                     'appid' => $appId,
                 ]);

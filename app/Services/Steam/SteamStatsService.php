@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Steam;
 
 use Carbon\Carbon;
-use App\Services\GameStatsCalculator;
+use App\Services\Game\GameStatsCalculator;
 
 class SteamStatsService
 {
