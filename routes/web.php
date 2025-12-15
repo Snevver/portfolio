@@ -24,6 +24,13 @@ Route::middleware('steam.auth')->group(function () {
         return Inertia::render('Dashboard');
     });
 
+    // Group routes under /minigame/
+    Route::prefix('minigame')->group(function () {
+        Route::get('/classic', function () {
+            return Inertia::render('Minigames/Classic');
+        });
+    });
+
     Route::post('/api/classic', [ClassicGamemodeController::class, 'index']);
 });
 
