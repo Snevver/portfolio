@@ -253,7 +253,7 @@ export default function Dashboard() {
                         useLogo={true}
                         title="SteamGuessr Classic"
                         description="Guess the game from its statistics"
-                        href="/classic"
+                        href="/minigame/classic"
                         onNavigate={handleMinigameNavigation}
                     />
                     <MinigameCard
