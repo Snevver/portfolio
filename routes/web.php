@@ -9,6 +9,15 @@ Route::get('/', function () {
     return Inertia::render('Landing');
 });
 
+Route::get('/admin', function () {
+    return Inertia::render('Admin');
+});
+
+Route::redirect('/login', '/admin');
+Route::redirect('/profile', '/admin');
+Route::redirect('/settings', '/admin');
+Route::redirect('/account', '/admin');
+
 // Group protected routes that require a SteamID in the session
 Route::middleware('steam.auth')->group(function () {
     Route::get('/dashboard', function () {
