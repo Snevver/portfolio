@@ -60,15 +60,28 @@ export default function Classic() {
                     <Modal
                         isOpen={isModalOpen}
                         onClose={() => setIsModalOpen(false)}
-                        title="How does this work?"
+                        title="Welcome to SteamGuessr Classic!"
                     >
-                        <p>
-                            Welcome to SteamGuessr Classic!
-                        </p>
+                        <div className="space-y-2">
+                            <p className="text-xl font-semibold text-white">
+                                How does this work?
+                            </p>
 
-                        <p>
-                            test
-                        </p>
+                            <p>
+                                The objective of this minigame is to guess the
+                                correct game based on the hints provided.
+                            </p>
+
+                            <p>
+                                You can guess as many times as you want, but you
+                                only get three hints; hard, medium and easy.
+                            </p>
+
+                            <p>
+                                After you guess the correct game, you will get a
+                                score based on how many hints you used.
+                            </p>
+                        </div>
                     </Modal>
                 </>
             )}
