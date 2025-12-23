@@ -4,6 +4,7 @@ import Layout from "../../Layouts/Layout";
 import Modal from "../../Components/Modal";
 import Card from "../../Components/Card";
 import Button from "../../Components/Button";
+import ClassicHintCard from "../../Components/ClassicHintCard";
 
 export default function Classic() {
     const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +16,8 @@ export default function Classic() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
-    const [hintStage, setHintStage] = useState(0); // 0 = hard, 1 = medium, 2 = easy, 3 = reveal answer
+    const [hintStage, setHintStage] = useState("hard");
+    const [isOver, setIsOver] = useState(false);
     const { steam } = usePage().props;
 
     // NOTE: AI helped with the autocomplete functionality in this file.
@@ -77,8 +79,24 @@ export default function Classic() {
                 </div>
             ) : (
                 <>
-                    <Card></Card>
+                    {isOver ? (
+                        <>
+                            {/* Win Card */}
+                            <Card>
+                                <p>The game was {gameData?.game?.name}</p>
+                            </Card>
+                        </>
+                    ) : (
+                        <>
+                            {/* Hint Card */}
+                            <ClassicHintCard
+                                difficulty={hintStage}
+                                hintData={gameData?.hints_data[hintStage]}
+                            />
+                        </>
+                    )}
 
+                    {/* Input Card */}
                     <Card className="space-y-6 w-full max-w-2xl">
                         <div className="text-center space-y-2">
                             <h3 className="text-2xl font-semibold text-white">
@@ -93,9 +111,50 @@ export default function Classic() {
 
                         <form
                             className="space-y-4"
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                // TODO: Handle guess submission
+                            onSubmit={(event) => {
+                                event.preventDefault();
+
+                                if (!gameData?.game?.name || isOver) {
+                                    return;
+                                }
+
+                                const difficultyOrder = [
+                                    "hard",
+                                    "medium",
+                                    "easy",
+                                ];
+                                const normalizedGuess = guess
+                                    .trim()
+                                    .toLowerCase();
+                                const correctName = gameData.game.name
+                                    .trim()
+                                    .toLowerCase();
+
+                                if (!normalizedGuess) {
+                                    return;
+                                }
+
+                                // Correct guess -> game over
+                                if (normalizedGuess === correctName) {
+                                    setIsOver(true);
+                                    return;
+                                }
+
+                                // Wrong guess -> advance hint or end game if on last hint
+                                const currentIndex =
+                                    difficultyOrder.indexOf(hintStage);
+
+                                if (
+                                    currentIndex === -1 ||
+                                    currentIndex === difficultyOrder.length - 1
+                                ) {
+                                    // Already on last hint (easy) -> game over
+                                    setIsOver(true);
+                                } else {
+                                    setHintStage(
+                                        difficultyOrder[currentIndex + 1]
+                                    );
+                                }
                             }}
                         >
                             <div className="relative">
@@ -165,7 +224,7 @@ export default function Classic() {
                                             setSelectedIndex(-1);
                                         }
                                     }}
-                                    disabled={isSubmitting}
+                                    disabled={isSubmitting || isOver}
                                 />
                                 {showSuggestions &&
                                     filteredGames.length > 0 && (
@@ -214,7 +273,7 @@ export default function Classic() {
 
                             <Button
                                 type="submit"
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || isOver}
                                 ariaLabel="Submit Guess"
                             >
                                 {isSubmitting ? (
@@ -250,7 +309,7 @@ export default function Classic() {
 
                     {/* Tutorial Modal */}
                     <Modal
-                        isOpen={isModalOpen}
+                        isOpen={false}
                         onClose={() => setIsModalOpen(false)}
                         title="Welcome to SteamGuessr Classic!"
                     >
